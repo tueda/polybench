@@ -1,6 +1,6 @@
 """Entry point."""
 
-import pretty_errors  # noqa: F401
+import pretty_errors  # noqa: F401  # lgtm [py/unused-import]
 
 from . import main
 
