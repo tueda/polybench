@@ -10,7 +10,6 @@ import shutil
 import statistics
 import sys
 import time
-from logging import Logger
 from pathlib import Path
 from typing import Any, List, Optional, Sequence, Set, Tuple, cast
 
@@ -23,6 +22,8 @@ from .poly import Polynomial
 from .prob import ProblemSet
 from .solver import Result, Solver
 from .util import bytes2human
+
+Logger = logging.Logger
 
 
 def next_job_id(output_dir: Path) -> str:
