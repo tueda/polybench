@@ -1,0 +1,115 @@
+name: Lint
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: 0 0 1 * * # monthly
+
+jobs:
+  gitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+      - name: Install dependencies
+        run: pip install gitlint
+
+      - name: Run gitlint
+        run: gitlint
+
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+      - name: Run pre-commit
+        uses: pre-commit/action@v2.0.0
+
+  hadolint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Check Dockerfile
+        uses: brpaz/hadolint-action@v1.2.1
+
+  gradle-wrapper-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Validate Gradle Wrapper binaries
+        uses: gradle/wrapper-validation-action@v1
+
+  gradle-check:
+    strategy:
+      matrix:
+        solver-name: [rings]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Run gradlew check
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: check
+          build-root-directory: polybench/solvers/${{ matrix.solver-name }}
+          wrapper-directory: polybench/solvers/${{ matrix.solver-name }}
+          dependencies-cache-enabled: true
+
+  cargo-check:
+    strategy:
+      matrix:
+        solver-name: [reform]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Cache for Cargo
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            **/target
+          key: ${{ runner.os }}-cargo-check-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-check-
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      # See: https://github.com/actions-rs/cargo/issues/6
+      - name: Run cargo fmt
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --manifest-path polybench/solvers/${{ matrix.solver-name }}/Cargo.toml -- --check
+
+      - name: Run cargo clippy
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --manifest-path polybench/solvers/${{ matrix.solver-name }}/Cargo.toml
+        # See: https://github.com/rust-lang/rust-clippy/issues/1209
+        env:
+          RUSTFLAGS: -D warnings
