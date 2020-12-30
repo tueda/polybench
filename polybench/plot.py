@@ -40,11 +40,11 @@ def make_plots(csv_file: Path, output_dir: Path, suffix: str = ".pdf") -> None:
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    output_file = output_dir / f"summary.{suffix}"
+    output_file = output_dir / f"summary{suffix}"
     make_summary_plot(df, names, output_file)
 
     for x, y in itertools.combinations(names, 2):
-        output_file = output_dir / f"{x}_vs_{y}.{suffix}"
+        output_file = output_dir / f"{x}_vs_{y}{suffix}"
         make_comparison_plot(df, x, y, output_file)
 
 
