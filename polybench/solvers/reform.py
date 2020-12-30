@@ -32,7 +32,6 @@ class ReformSolver(Solver):
 
     def _solve(self, problems: ProblemSet) -> Optional[Sequence[Result]]:
         variables = ",".join(problems.variables)
-        log_file = self.output_dir / "output.csv"  # Path(".") doesn't work
         log_file = Path(".") / "output.csv"
         args = [variables, str(self.problem_file), str(log_file)]
         if not self.run(
