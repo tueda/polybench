@@ -299,14 +299,14 @@ def main(*, args: Optional[Sequence[str]] = None) -> None:
         default=None,
         type=str,
         help="set the build directory (default: build)",
-        metavar="N",
+        metavar="DIR",
     )
     parser.add_argument(
         "--output-directory",
         default=None,
         type=str,
         help="set the output directory (default: output)",
-        metavar="N",
+        metavar="DIR",
     )
     parser.add_argument(
         "--seed",
