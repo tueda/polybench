@@ -1,0 +1,85 @@
+.python_versions: &python_versions
+  parallel:
+    matrix:
+      - IMAGE:
+        - python:3.6
+        - python:3.7
+        - python:3.8
+        - python:3.9
+
+lint:
+  image: $IMAGE
+  before_script:
+    - pip install gitlint pre-commit
+  script:
+    - gitlint
+    - pre-commit run --all-files
+  <<: *python_versions
+
+lint_dockerfile:
+  image: hadolint/hadolint:latest-debian
+  script:
+    - hadolint Dockerfile
+
+lint_java:
+  image: openjdk:11  # google-java-format >= 1.8 requires jdk >= 11
+  script:
+    - |
+      for d in $(find . -name build.gradle -exec dirname {} \;); do (
+        cd "$d"
+        pwd
+        ./gradlew check
+      ) done
+
+lint_rust:
+  image: rust:1.48
+  before_script:
+    - rustup component add clippy rustfmt
+  script:
+    - |
+      for d in $(find . -name Cargo.toml -exec dirname {} \;); do (
+        cd "$d"
+        pwd
+        cargo fmt -- --check
+        RUSTFLAGS='-D warnings' cargo clippy
+      ) done
+
+test:
+  image: $IMAGE
+  before_script:
+    - pip install poetry
+    - poetry install
+  script:
+    - poetry run pytest
+  <<: *python_versions
+
+.run:
+  script:
+    - ./run.sh --type nontrivial-gcd --max-nterms 10 --debug --all
+    - ./run.sh --type nontrivial-factor --max-nterms 5 --debug --all
+
+run:
+  extends: .run
+  image: $IMAGE
+  <<: *python_versions
+
+run_java:
+  extends: .run
+  image: python:3.6
+  before_script:
+    - apt-get update
+    - apt-get -y install default-jdk-headless
+
+run_rust:
+  extends: .run
+  image: python:3.6
+  before_script:
+    - apt-get update
+    - apt-get -y install cargo
+
+run_singular:
+  extends: .run
+  image: python:3.6
+  before_script:
+    - apt-get update
+    - apt-get -y install singular-ui

@@ -1,0 +1,15 @@
+**/.gradle
+**/Cargo.lock
+**/__pycache__
+**/build
+**/target
+.coverage
+.coverage.*
+.git
+.mypy_cache
+.pytest_cache
+.venv
+dist
+htmlcov
+output
+poetry.toml

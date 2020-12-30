@@ -1,0 +1,62 @@
+plugins {
+  id 'application'
+  id 'com.diffplug.spotless' version '5.8.2'
+  id 'com.github.ben-manes.versions' version '0.36.0'
+  id 'ru.vyarus.quality' version '4.4.0'
+}
+
+def versions = [
+  checkstyle: '8.38',
+  rings: '2.5.7',
+]
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation "cc.redberry:rings:${versions.rings}"
+}
+
+application {
+  mainClass = 'com.github.tueda.polybench.rings.App'
+}
+
+// Spotless
+
+spotless {
+  java {
+    googleJavaFormat('1.9')
+  }
+  groovyGradle {
+    greclipse().configFile('config/greclipse.properties')
+  }
+}
+
+// Checkstyle
+
+configurations {
+  checkstyleConfig
+}
+
+dependencies {
+  checkstyleConfig("com.puppycrawl.tools:checkstyle:${versions.checkstyle}") {
+    transitive = false
+  }
+}
+
+quality {
+  checkstyleVersion = versions.checkstyle
+}
+
+afterEvaluate {
+  checkstyle {
+    config = resources.text.fromArchiveEntry(configurations.checkstyleConfig, 'google_checks.xml')
+  }
+}
+
+// SpotBugs
+
+quality {
+  spotbugsLevel = 'low'
+}

@@ -1,0 +1,8 @@
+[package]
+name = "polybench-reform"
+version = "0.1.0"
+authors = ["Takahiro Ueda <tueda@st.seikei.ac.jp>"]
+edition = "2018"
+
+[dependencies]
+reform = { git = "https://github.com/tueda/reform.git", branch = "fix-serialize" }
