@@ -1,6 +1,8 @@
 polybench
 =========
 
+[![Test](https://github.com/tueda/polybench/workflows/Test/badge.svg?branch=master)](https://github.com/tueda/polybench/actions?query=branch:master)
+
 Multivariate polynomial arithmetic benchmark tests.
 
 Many scientific and engineering applications utilise multivariate polynomial
@@ -67,4 +69,4 @@ or [Docker](https://www.docker.com/) with this repository.
 License
 -------
 
-MIT
+[MIT](https://github.com/tueda/polybench/blob/master/LICENSE)
