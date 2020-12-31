@@ -31,21 +31,20 @@ jobs:
       - name: Run pytest
         run: poetry run pytest
 
-  bench:
+  testrun:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        problem-type:
-          - nontrivial-gcd
-          - trivial-gcd
-          - nontrivial-factor
-          - trivial-factor
+        python-version: [3.6, 3.7, 3.8, 3.9]
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
 
       - name: Set up Python
         uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
 
       - name: Set up Java
         uses: actions/setup-java@v1
@@ -80,17 +79,21 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('polybench/**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
 
-      - name: Get Python path
-        id: get-python
-        shell: bash
-        run: echo "::set-output name=path::$(which python3)"
+      # NOTE: we don't cache the entire venv for the test purpose.
 
-      - name: Cache for venv
+      - name: Cache for pip
         uses: actions/cache@v2
         with:
-          path: .venv
-          key: ${{ runner.os }}-venv-${{ steps.get-python.outputs.path }}-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: ${{ runner.os }}-venv-${{ steps.get-python.outputs.path }}-
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+
+      - name: Cache for Poetry
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: ${{ runner.os }}-poetry-
 
       - name: Cache for build
         uses: actions/cache@v2
@@ -99,11 +102,17 @@ jobs:
           key: ${{ runner.os }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-build-
 
-      - name: Run benchmark
-        run: ./run.sh --type ${{ matrix.problem-type }} --output-directory output-${{ matrix.problem-type }} --all
+      - name: Build
+        run: ./run.sh --build-only --debug --all
 
-      - name: Save results
-        uses: actions/upload-artifact@v2
-        with:
-          path: output-*/
-          if-no-files-found: error
+      - name: Test run (nontrivial-gcd)
+        run: ./run.sh --type nontrivial-gcd --max-nterms 5 --debug --all
+
+      - name: Test run (trivial-gcd)
+        run: ./run.sh --type trivial-gcd --max-nterms 5 --debug --all
+
+      - name: Test run (nontrivial-factor)
+        run: ./run.sh --type nontrivial-factor --max-nterms 5 --debug --all
+
+      - name: Test run (trivial-factor)
+        run: ./run.sh --type trivial-factor --max-nterms 5 --debug --all
