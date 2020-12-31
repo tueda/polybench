@@ -64,7 +64,7 @@ jobs:
         with:
           path: .venv
           key: ${{ runner.os }}-venv-${{ steps.get-python.outputs.path }}-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: ${{ runner.os }}-venv-${{ steps.get-python.outputs.path }}-
+          # We can't use restore-keys because venv should contain all required packages, otherwise fails.
 
       - name: Cache for build
         uses: actions/cache@v2
