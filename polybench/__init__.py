@@ -11,8 +11,9 @@ import statistics
 import sys
 import time
 from pathlib import Path
-from typing import Any, List, Optional, Sequence, Set, Tuple, cast
+from typing import Any, Callable, List, Optional, Sequence, Set, Tuple, cast
 
+import colorama
 import colorlog
 import cpuinfo
 import psutil
@@ -202,7 +203,11 @@ def run_solvers(
         logger.info(f"figures are in {plot_output_dir}")
 
 
-def main(*, args: Optional[Sequence[str]] = None) -> None:
+def main(
+    *,
+    args: Optional[Sequence[str]] = None,
+    stderr_color_hook: Optional[Callable[[bool], None]] = None,
+) -> None:
     """Entry point."""
     # First, parse the arguments.
 
@@ -324,6 +329,14 @@ def main(*, args: Optional[Sequence[str]] = None) -> None:
         metavar="N",
     )
     parser.add_argument(
+        "--color",
+        default="auto",
+        choices=["auto", "always", "never"],
+        help="specify whether to use color for the terminal output:"
+        " auto, always or never (default: auto)",
+        metavar="MODE",
+    )
+    parser.add_argument(
         "--build-only",
         action="store_true",
         help="build executables but skip actual benchmarks",
@@ -358,6 +371,19 @@ def main(*, args: Optional[Sequence[str]] = None) -> None:
         )
 
     opts = parser.parse_args(args=args)
+
+    # Initialise colours in the terminal before other things.
+    color = cast(str, opts.color)
+    strip: Optional[bool] = None  # for "auto"
+    if color == "always":
+        strip = False
+    elif color == "never":
+        strip = True
+    colorama.deinit()  # See: https://github.com/tartley/colorama/issues/205
+    old_stderr = sys.stderr
+    colorama.init(strip=strip)
+    if stderr_color_hook:
+        stderr_color_hook(old_stderr == sys.stderr)
 
     n_problems = cast(int, opts.nproblems)
     n_warmups = cast(int, opts.nwarmups)
