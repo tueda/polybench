@@ -44,6 +44,24 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
 
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install singular-ui
+          ./run.sh --help >/dev/null
+
       - name: Cache for Gradle
         uses: actions/cache@v2
         with:
@@ -62,12 +80,17 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('polybench/**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
 
+      - name: Get Python path
+        id: get-python
+        shell: bash
+        run: echo "::set-output name=path::$(which python3)"
+
       - name: Cache for venv
         uses: actions/cache@v2
         with:
           path: .venv
-          key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: ${{ runner.os }}-venv-
+          key: ${{ runner.os }}-venv-${{ steps.get-python.outputs.path }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: ${{ runner.os }}-venv-${{ steps.get-python.outputs.path }}-
 
       - name: Cache for build
         uses: actions/cache@v2
@@ -75,24 +98,6 @@ jobs:
           path: build
           key: ${{ runner.os }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-build-
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-
-      - name: Set up Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get install singular-ui
-          ./run.sh --help >/dev/null
 
       - name: Run benchmark
         run: ./run.sh --type ${{ matrix.problem-type }} --output-directory output-${{ matrix.problem-type }} --all

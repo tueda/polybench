@@ -83,6 +83,11 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
 
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
       - name: Cache for Cargo
         uses: actions/cache@v2
         with:
@@ -92,11 +97,6 @@ jobs:
             **/target
           key: ${{ runner.os }}-cargo-check-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-check-
-
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
 
       # See: https://github.com/actions-rs/cargo/issues/6
       - name: Run cargo fmt
