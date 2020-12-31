@@ -324,6 +324,11 @@ def main(*, args: Optional[Sequence[str]] = None) -> None:
         metavar="N",
     )
     parser.add_argument(
+        "--build-only",
+        action="store_true",
+        help="build executables but skip actual benchmarks",
+    )
+    parser.add_argument(
         "--keep-temp",
         action="store_true",
         help="don't delete temporary files",
@@ -362,6 +367,7 @@ def main(*, args: Optional[Sequence[str]] = None) -> None:
     max_coeff = cast(int, opts.max_coeff)
     seed = cast(int, opts.seed)
     timeout = cast(int, opts.timeout)
+    build_only = cast(bool, opts.build_only)
     keep_temp = cast(bool, opts.keep_temp)
     debug = cast(bool, opts.debug)
 
@@ -527,13 +533,14 @@ def main(*, args: Optional[Sequence[str]] = None) -> None:
         job_id=job_id,
         seed=seed,
         timeout=timeout,
+        build_only=build_only,
         keep_temp=keep_temp,
         debug=debug,
     )
 
     solvers = prepare_solvers(solvers, problems)
 
-    if solvers:
+    if solvers and not build_only:
         run_solvers(
             solvers,
             problems,
