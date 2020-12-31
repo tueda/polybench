@@ -103,16 +103,16 @@ jobs:
           restore-keys: ${{ runner.os }}-build-
 
       - name: Build
-        run: ./run.sh --build-only --debug --all
+        run: ./run.sh --build-only --color always --debug --all
 
       - name: Test run (nontrivial-gcd)
-        run: ./run.sh --type nontrivial-gcd --max-nterms 5 --debug --all
+        run: ./run.sh --type nontrivial-gcd --max-nterms 5 --color always --debug --all
 
       - name: Test run (trivial-gcd)
-        run: ./run.sh --type trivial-gcd --max-nterms 5 --debug --all
+        run: ./run.sh --type trivial-gcd --max-nterms 5 --color always --debug --all
 
       - name: Test run (nontrivial-factor)
-        run: ./run.sh --type nontrivial-factor --max-nterms 5 --debug --all
+        run: ./run.sh --type nontrivial-factor --max-nterms 5 --color always --debug --all
 
       - name: Test run (trivial-factor)
-        run: ./run.sh --type trivial-factor --max-nterms 5 --debug --all
+        run: ./run.sh --type trivial-factor --max-nterms 5 --color always --debug --all

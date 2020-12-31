@@ -34,9 +34,7 @@ jobs:
           toolchain: stable
 
       - name: Install dependencies
-        run: |
-          sudo apt-get install singular-ui
-          ./run.sh --help >/dev/null
+        run: sudo apt-get install singular-ui
 
       - name: Cache for Gradle
         uses: actions/cache@v2
@@ -76,10 +74,10 @@ jobs:
           restore-keys: ${{ runner.os }}-build-
 
       - name: Build
-        run: ./run.sh --build-only --debug --all
+        run: ./run.sh --build-only --color always --debug --all
 
       - name: Run benchmark
-        run: ./run.sh --type ${{ matrix.problem-type }} --output-directory output-${{ matrix.problem-type }} --all
+        run: ./run.sh --type ${{ matrix.problem-type }} --output-directory output-${{ matrix.problem-type }} --color always --all
 
       - name: Save results
         uses: actions/upload-artifact@v2

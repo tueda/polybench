@@ -55,8 +55,8 @@ test:
 
 .run:
   script:
-    - ./run.sh --type nontrivial-gcd --max-nterms 10 --debug --all
-    - ./run.sh --type nontrivial-factor --max-nterms 5 --debug --all
+    - ./run.sh --type nontrivial-gcd --max-nterms 10 --debug --color always --all
+    - ./run.sh --type nontrivial-factor --max-nterms 5 --debug --color always --all
 
 run:
   extends: .run
