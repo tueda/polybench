@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "polybench"
-version = "0.0.1-alpha.0"
+version = "0.1.0-rc.1"
 description = "Multivariate polynomial arithmetic benchmark tests."
 license = "MIT"
 authors = ["Takahiro Ueda <tueda@st.seikei.ac.jp>"]
