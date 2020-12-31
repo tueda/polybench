@@ -20,6 +20,13 @@ def variables(n_vars: int) -> Sequence[str]:
 ExponentsDistribution = Literal["uniform", "sharp"]
 
 
+# Unfortunately {typing/typing_extensions}.get_args is not available in Python 3.6.
+# Instead, we make a function to extract the members.
+def get_exponents_distribution_args() -> Sequence[str]:
+    """Return ``typing.get_args(ExponentsDistribution)``."""
+    return ("uniform", "sharp")
+
+
 def random_polynomial(
     *,
     exp_dist: ExponentsDistribution,
@@ -130,6 +137,13 @@ ProblemTypeInput = Literal[
 
 
 ProblemType = Literal["gcd", "factor"]
+
+
+# Unfortunately {typing/typing_extensions}.get_args is not available in Python 3.6.
+# Instead, we make a function to extract the members.
+def get_problem_type_input_args() -> Sequence[str]:
+    """Return ``typing.get_args(ProblemTypeInput)``."""
+    return ("trivial-gcd", "nontrivial-gcd", "trivial-factor", "nontrivial-factor")
 
 
 def problem_type_from_input(type_input: ProblemTypeInput) -> ProblemType:

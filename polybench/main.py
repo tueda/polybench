@@ -19,7 +19,13 @@ import psutil
 
 from . import plot
 from .poly import Polynomial
-from .prob import ProblemSet
+from .prob import (
+    ExponentsDistribution,
+    ProblemSet,
+    ProblemTypeInput,
+    get_exponents_distribution_args,
+    get_problem_type_input_args,
+)
 from .solver import Result, Solver
 from .util import bytes2human
 
@@ -220,11 +226,14 @@ def main(
     if args is None:
         args = sys.argv[1:]
 
+    defined_problem_types = get_problem_type_input_args()
+    defined_exp_dists = get_exponents_distribution_args()
+
     parser = argparse.ArgumentParser(prog="polybench")
     parser.add_argument(
         "--type",
         default="nontrivial-gcd",
-        type=str,
+        choices=defined_problem_types,
         help="set the type of the problems:"
         " trivial-gcd [gcd(a*b,c*d)],"
         " nontrivial-gcd [gcd(a*g,b*g)],"
@@ -250,7 +259,7 @@ def main(
     parser.add_argument(
         "--exp-dist",
         default="uniform",
-        type=str,
+        choices=defined_exp_dists,
         help="set the exponents distribution: uniform or sharp (default: uniform)",
         metavar="DIST",
     )
@@ -391,8 +400,10 @@ def main(
     if stderr_color_hook:
         stderr_color_hook(old_stderr == sys.stderr)
 
+    problem_type = cast(ProblemTypeInput, opts.type)
     n_problems = cast(int, opts.nproblems)
     n_warmups = cast(int, opts.nwarmups)
+    exp_dist = cast(ExponentsDistribution, opts.exp_dist)
     n_vars = cast(int, opts.nvars)
     max_n_terms = cast(int, opts.max_nterms)
     max_degree = cast(int, opts.max_degree)
@@ -402,21 +413,6 @@ def main(
     build_only = cast(bool, opts.build_only)
     keep_temp = cast(bool, opts.keep_temp)
     debug = cast(bool, opts.debug)
-
-    if opts.type in (
-        "trivial-gcd",
-        "nontrivial-gcd",
-        "trivial-factor",
-        "nontrivial-factor",
-    ):
-        problem_type = opts.type
-    else:
-        raise ValueError(f"unknown problem type: {opts.type}")
-
-    if opts.exp_dist in ("uniform", "sharp"):
-        exp_dist = opts.exp_dist
-    else:
-        raise ValueError(f"unknown exponents distribution: {opts.exp_dist}")
 
     if opts.min_nterms is not None:
         min_n_terms = cast(int, opts.min_nterms)
