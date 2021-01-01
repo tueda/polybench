@@ -2,7 +2,7 @@ polybench
 =========
 
 [![Test](https://github.com/tueda/polybench/workflows/Test/badge.svg?branch=master)](https://github.com/tueda/polybench/actions?query=branch:master)
-[![PyPI](https://img.shields.io/pypi/v/polybench)](https://pypi.python.org/pypi/polybench)
+[![PyPI version](https://badge.fury.io/py/polybench.svg)](https://badge.fury.io/py/polybench)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/tueda/polybench.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tueda/polybench/context:python)
 
 Multivariate polynomial arithmetic benchmark tests.
@@ -39,8 +39,8 @@ They are (in alphabetical order):
 - [Singular](https://www.singular.uni-kl.de/)
 
 
-Get started
------------
+Getting started
+---------------
 
 Clone this repository and try to run the `run.sh` script:
 
