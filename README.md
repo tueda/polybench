@@ -64,8 +64,11 @@ adequately. See the help message shown by
 ./run.sh --help
 ```
 
-You can also use [Poetry](https://python-poetry.org/)
+You can also use [pip](https://pip.pypa.io/en/stable/),
+[Poetry](https://python-poetry.org/)
 or [Docker](https://www.docker.com/) with this repository.
+Installation with `pip install` or `poetry install` makes a command
+`polybench` available, which acts as the `run.sh` script described above.
 
 
 License
