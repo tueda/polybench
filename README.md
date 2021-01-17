@@ -65,10 +65,31 @@ adequately. See the help message shown by
 ```
 
 You can also use [pip](https://pip.pypa.io/en/stable/),
+[pipx](https://pipxproject.github.io/pipx/),
 [Poetry](https://python-poetry.org/)
 or [Docker](https://www.docker.com/) with this repository.
-Installation with `pip install` or `poetry install` makes a command
+Installation with `pip(x) install` or `poetry install` makes a command
 `polybench` available, which acts as the `run.sh` script described above.
+```sh
+pip install polybench
+polybench --all
+python -m polybench --all  # alternative way to launch
+```
+```sh
+pipx install polybench
+polybench --all
+```
+```sh
+git clone https://github.com/tueda/polybench.git
+cd polybench
+poetry install
+poetry run polybench --all
+```
+```sh
+docker build -t polybench:latest https://github.com/tueda/polybench.git
+docker run -it --rm polybench:latest
+./run.sh --all
+```
 
 
 License
