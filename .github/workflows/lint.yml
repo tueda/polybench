@@ -41,7 +41,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Check Dockerfile
-        uses: brpaz/hadolint-action@v1.2.1
+        uses: hadolint/hadolint-action@v1.6.0
 
   gradle-wrapper-validation:
     runs-on: ubuntu-latest
