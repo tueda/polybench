@@ -29,7 +29,8 @@ They are (in alphabetical order):
   if not available in the system, then
   a [release binary](https://github.com/vermaseren/form/releases)
   will be automatically downloaded.
-- [Mathematica](https://www.wolfram.com/mathematica/)
+- [Mathematica](https://www.wolfram.com/mathematica/):
+  indeed, [Free Wolfram Engine for Developers](https://www.wolfram.com/engine/) is sufficient to run.
 - [reFORM](https://reform.readthedocs.io/en/latest/):
   automatically downloaded
   (requires [Rust](https://www.rust-lang.org/) >= 1.36).
