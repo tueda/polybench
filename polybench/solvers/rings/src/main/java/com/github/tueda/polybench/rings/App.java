@@ -57,7 +57,7 @@ public class App {
     long t1 = System.nanoTime();
     MultivariatePolynomial<BigInteger> gcd = MultivariateGCD.PolynomialGCD(p1, p2);
     long t2 = System.nanoTime();
-    return (t2 - t1) / 1.0e9 + "," + gcd;
+    return (t2 - t1) / 1.0e9 + "," + gcd.toString(variables);
   }
 
   private static String doFactor(final String line, final String... variables) {
@@ -70,7 +70,7 @@ public class App {
     StringBuilder result = new StringBuilder();
     result.append((t2 - t1) / 1.0e9 + "," + factors.unit);
     for (int i = 0; i < factors.size(); i++) {
-      result.append(",(" + factors.get(i) + ")^" + factors.getExponent(i));
+      result.append(",(" + factors.get(i).toString(variables) + ")^" + factors.getExponent(i));
     }
     return result.toString();
   }
