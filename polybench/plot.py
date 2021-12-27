@@ -2,7 +2,7 @@
 
 import itertools
 from pathlib import Path
-from typing import Dict, Sequence, Union
+from typing import Dict, Optional, Sequence, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -32,7 +32,13 @@ def write_csv(
     df.to_csv(csv_file, index=False)
 
 
-def make_plots(csv_file: Path, output_dir: Path, suffix: str = ".pdf") -> None:
+def make_plots(
+    csv_file: Path,
+    output_dir: Path,
+    suffix: str = ".pdf",
+    *,
+    title: Optional[str] = None,
+) -> None:
     """Create comparison plots from the given CSV file."""
     df = pd.read_csv(csv_file)
 
@@ -41,14 +47,20 @@ def make_plots(csv_file: Path, output_dir: Path, suffix: str = ".pdf") -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     output_file = output_dir / f"summary{suffix}"
-    make_summary_plot(df, names, output_file)
+    make_summary_plot(df, names, output_file, title=title)
 
     for x, y in itertools.combinations(names, 2):
         output_file = output_dir / f"{x}_vs_{y}{suffix}"
-        make_comparison_plot(df, x, y, output_file)
+        make_comparison_plot(df, x, y, output_file, title=title)
 
 
-def make_summary_plot(df: DataFrame, names: Sequence[str], output_file: Path) -> None:
+def make_summary_plot(
+    df: DataFrame,
+    names: Sequence[str],
+    output_file: Path,
+    *,
+    title: Optional[str] = None,
+) -> None:
     """Create a summary plot for the given data."""
     data = [df[name] for name in names]
 
@@ -68,6 +80,9 @@ def make_summary_plot(df: DataFrame, names: Sequence[str], output_file: Path) ->
         meanprops={"marker": "*"},
     )
 
+    if title:
+        ax.set_title(title, fontsize=10)
+
     ax.set_xticklabels(names, rotation=45)
     ax.set_ylabel("Elapsed time (s)")
     ax.set_ylim(t_range)
@@ -79,7 +94,11 @@ def make_summary_plot(df: DataFrame, names: Sequence[str], output_file: Path) ->
 
 
 def make_comparison_plot(
-    df: DataFrame, x_name: str, y_name: str, output_file: Path
+    df: DataFrame,
+    x_name: str,
+    y_name: str,
+    output_file: Path,
+    title: Optional[str] = None,
 ) -> None:
     """Create a comparison plot for the given two solvers."""
     x_points = df[x_name]
@@ -92,6 +111,9 @@ def make_comparison_plot(
     t_range = [min_t / 1.5, max_t * 1.5]
 
     fig, ax = plt.subplots()
+
+    if title:
+        ax.set_title(title, fontsize=10)
 
     ax.set_xlabel(f"{x_name} elapsed time (s)")
     ax.set_ylabel(f"{y_name} elapsed time (s)")

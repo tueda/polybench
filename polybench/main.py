@@ -115,6 +115,7 @@ def run_solvers(
     *,
     job_id: str,
     output_dir: Path,
+    plot_title: str,
     logger: Logger,
     keep_temp: bool = False,
 ) -> None:
@@ -210,7 +211,7 @@ def run_solvers(
         plot_output_dir = output_csv_file.with_suffix(".figures")
         suffix = ".pdf"
 
-        plot.make_plots(output_csv_file, plot_output_dir, suffix)
+        plot.make_plots(output_csv_file, plot_output_dir, suffix, title=plot_title)
 
         logger.info(f"figures are in {plot_output_dir}")
 
@@ -541,6 +542,13 @@ def main(
             s for s in solvers if any(s.name.lower() == t.lower() for t in opts.solvers)
         ]
 
+    # Title for plots.
+
+    plot_title = (
+        f"{problem_type} ({exp_dist}, # vars = {n_vars}, "
+        f"max degrees = {max_degree}, max # terms = {max_n_terms})"
+    )
+
     # Do benchmarks.
 
     config_log(
@@ -574,6 +582,7 @@ def main(
             problems,
             job_id=job_id,
             output_dir=output_dir,
+            plot_title=plot_title,
             logger=logger,
             keep_temp=keep_temp,
         )
