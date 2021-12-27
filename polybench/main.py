@@ -471,7 +471,8 @@ def main(
 
     if not opts.solvers and not opts.all:
         raise ValueError(
-            "no solvers specified. You need to specify at least one solver to be run"
+            "no solvers specified. You need to specify at least one solver to be run. "
+            "You can use --all option to run all solvers available"
         )
 
     # Create problems.
