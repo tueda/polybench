@@ -49,7 +49,9 @@ class SingularSolver(Solver):
             def print2(s: str) -> None:
                 print(s, file=f)
 
+            # NOTE: Singular 4-2-1 renamed "poly.lib." to "polylib.lib".
             print2('LIB "poly.lib";')
+            print2('LIB "polylib.lib";')
             print2("short=0;")
             print2('system("--ticks-per-sec",1000);')
             print2(f"ring R = 0, ({', '.join(problems.variables)}), dp;")
