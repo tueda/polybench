@@ -333,7 +333,7 @@ def main(
         "--seed",
         default=42,
         type=int,
-        help="set the random seed",
+        help="set the random seed (default: 42)",
         metavar="N",
     )
     parser.add_argument(
