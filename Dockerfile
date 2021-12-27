@@ -2,7 +2,7 @@ FROM ubuntu:focal
 
 # NOTE: m4 and make are needed for gmp-mpfr-sys
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-  cargo=0.*.* \
+  cargo=0.42.* \
   openjdk-11-jdk-headless=11.0.* \
   form=4.2.* \
   m4=1.4.* \
