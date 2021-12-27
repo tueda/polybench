@@ -10,6 +10,7 @@ import shutil
 import statistics
 import sys
 import time
+from collections import OrderedDict
 from pathlib import Path
 from typing import Any, Callable, List, Optional, Sequence, Set, Tuple, cast
 
@@ -116,6 +117,7 @@ def run_solvers(
     job_id: str,
     output_dir: Path,
     plot_title: str,
+    plot_suffixes: Sequence[str],
     logger: Logger,
     keep_temp: bool = False,
 ) -> None:
@@ -209,11 +211,14 @@ def run_solvers(
         # Generate plots.
 
         plot_output_dir = output_csv_file.with_suffix(".figures")
-        suffix = ".pdf"
 
-        plot.make_plots(output_csv_file, plot_output_dir, suffix, title=plot_title)
+        if plot_suffixes:
+            for suffix in plot_suffixes:
+                plot.make_plots(
+                    output_csv_file, plot_output_dir, "." + suffix, title=plot_title
+                )
 
-        logger.info(f"figures are in {plot_output_dir}")
+            logger.info(f"figures are in {plot_output_dir}")
 
 
 def main(
@@ -331,6 +336,14 @@ def main(
         metavar="DIR",
     )
     parser.add_argument(
+        "--plot-suffixes",
+        default="pdf",
+        type=str,
+        help="comma separated list of plot file suffixes (default: pdf; "
+        f"supported suffixes: {', '.join(plot.get_supported_filetypes())})",
+        metavar="SUFFIX1,SUFFIX2,...",
+    )
+    parser.add_argument(
         "--seed",
         default=42,
         type=int,
@@ -446,6 +459,15 @@ def main(
         output_dir = Path(".") / "output"
 
     output_dir = output_dir.resolve()
+
+    plot_suffixes = cast(str, opts.plot_suffixes).split(",")
+    plot_suffixes = list(OrderedDict.fromkeys(plot_suffixes))  # remove duplicates
+    plot_suffixes = [s for s in plot_suffixes if s]  # remove empty suffixes
+
+    supported_suffixes = plot.get_supported_filetypes()
+    if any(s not in supported_suffixes for s in plot_suffixes):
+        unsupported_suffixes = [s for s in plot_suffixes if s not in supported_suffixes]
+        raise ValueError(f"unsupported file format: {', '.join(unsupported_suffixes)}")
 
     if not opts.solvers and not opts.all:
         raise ValueError(
@@ -583,6 +605,7 @@ def main(
             job_id=job_id,
             output_dir=output_dir,
             plot_title=plot_title,
+            plot_suffixes=plot_suffixes,
             logger=logger,
             keep_temp=keep_temp,
         )

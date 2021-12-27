@@ -32,6 +32,11 @@ def write_csv(
     df.to_csv(csv_file, index=False)
 
 
+def get_supported_filetypes() -> Sequence[str]:
+    """Return the list of supported file formats."""
+    return tuple(plt.gcf().canvas.get_supported_filetypes().keys())
+
+
 def make_plots(
     csv_file: Path,
     output_dir: Path,
@@ -91,6 +96,7 @@ def make_summary_plot(
 
     fig.tight_layout()
     fig.savefig(output_file)
+    plt.close()
 
 
 def make_comparison_plot(
@@ -132,3 +138,4 @@ def make_comparison_plot(
 
     fig.tight_layout()
     fig.savefig(output_file)
+    plt.close()
