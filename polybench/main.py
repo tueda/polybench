@@ -316,7 +316,7 @@ def main(
     )
     parser.add_argument(
         "--max-coeff",
-        default=2 ** 14,
+        default=2**14,
         type=int,
         help="set the maximum coefficient (default: 2^14)",
         metavar="N",

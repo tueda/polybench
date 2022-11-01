@@ -46,25 +46,25 @@ class Polynomial:
         """Return ``- self``."""
         result = super().__new__(Polynomial)
         result._raw = symengine.expand(-self._raw)
-        return result  # type: ignore
+        return result
 
     def __add__(self, other: "Polynomial") -> "Polynomial":
         """Return ``self + other``."""
         result = super().__new__(Polynomial)
         result._raw = symengine.expand(self._raw + other._raw)
-        return result  # type: ignore
+        return result
 
     def __sub__(self, other: "Polynomial") -> "Polynomial":
         """Return ``self - other``."""
         result = super().__new__(Polynomial)
         result._raw = symengine.expand(self._raw - other._raw)
-        return result  # type: ignore
+        return result
 
     def __mul__(self, other: "Polynomial") -> "Polynomial":
         """Return ``self * other``."""
         result = super().__new__(Polynomial)
         result._raw = symengine.expand(self._raw * other._raw)
-        return result  # type: ignore
+        return result
 
     def equals_without_unit(self, other: "Polynomial") -> bool:
         """Return `True` if ``self == other`` up to a unit."""
