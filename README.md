@@ -1,9 +1,8 @@
 polybench
 =========
 
-[![Test](https://github.com/tueda/polybench/workflows/Test/badge.svg?branch=master)](https://github.com/tueda/polybench/actions?query=branch:master)
+[![Test](https://github.com/tueda/polybench/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/tueda/polybench/actions?query=branch:master)
 [![PyPI version](https://badge.fury.io/py/polybench.svg)](https://pypi.org/project/polybench/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/tueda/polybench.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tueda/polybench/context:python)
 
 Multivariate polynomial arithmetic benchmark tests.
 
