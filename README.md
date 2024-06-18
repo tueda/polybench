@@ -33,7 +33,7 @@ They are (in alphabetical order):
 - [reFORM](https://reform.readthedocs.io/en/latest/):
   automatically downloaded
   (requires [Rust](https://www.rust-lang.org/) >= 1.36).
-- [Rings](https://ringsalgebra.io/):
+- [Rings](https://rings.readthedocs.io/en/latest/):
   automatically downloaded
   (requires [JDK](https://www.oracle.com/technetwork/java/) >= 8).
 - [Singular](https://www.singular.uni-kl.de/)
