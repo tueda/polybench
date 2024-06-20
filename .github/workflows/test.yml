@@ -58,6 +58,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-get update
           sudo apt-get install singular-ui
           ./run.sh --help >/dev/null
 

@@ -36,7 +36,9 @@ jobs:
           toolchain: stable
 
       - name: Install dependencies
-        run: sudo apt-get install singular-ui
+        run: |
+          sudo apt-get update
+          sudo apt-get install singular-ui
 
       - name: Cache for Gradle
         uses: actions/cache@v2
