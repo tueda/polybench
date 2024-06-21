@@ -15,15 +15,23 @@ jobs:
         python-version: [3.7, 3.8, 3.9, '3.10', '3.11', '3.12']
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Install Poetry (Python >= 3.8)
+        if: matrix.python-version != 3.7
+        run: pipx install poetry
+
+      - name: Install Poetry (Python 3.7)
+        if: matrix.python-version == 3.7
+        run: |
+          pipx install poetry==1.7.1
+          pipx runpip poetry install packaging==21.3
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Install Poetry
-        run: pip install poetry
+          cache: 'poetry'
 
       - name: Install dependencies
         run: poetry install
@@ -39,65 +47,69 @@ jobs:
         python-version: [3.7, 3.8, 3.9, '3.10', '3.11', '3.12']
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Set up Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
+          distribution: temurin
           java-version: 11
 
       - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install singular-ui
-          ./run.sh --help >/dev/null
+
+      - name: Set up venv
+        run: ./run.sh --help
 
       - name: Cache for Gradle
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('polybench/**/*.gradle*') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-
 
       - name: Cache for Cargo
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-${{ hashFiles('polybench/**/Cargo.lock') }}
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            **/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
 
-      # NOTE: we don't cache the entire venv for the test purpose.
-
+      # NOTE: for testing purposes, we don't cache the entire contents of venv;
+      # instead, we only cache the packages downloaded by pip.
       - name: Cache for pip
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: ${{ runner.os }}-pip-
 
       - name: Cache for Poetry
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pypoetry
           key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
           restore-keys: ${{ runner.os }}-poetry-
 
       - name: Cache for build
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: build
           key: ${{ runner.os }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock') }}

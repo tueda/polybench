@@ -18,22 +18,21 @@ jobs:
           - trivial-factor
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
       - name: Set up Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
+          distribution: temurin
           java-version: 11
 
       - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Install dependencies
         run: |
@@ -41,7 +40,7 @@ jobs:
           sudo apt-get install singular-ui
 
       - name: Cache for Gradle
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
@@ -50,7 +49,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle-
 
       - name: Cache for Cargo
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/registry
@@ -61,17 +60,17 @@ jobs:
       - name: Get Python path
         id: get-python
         shell: bash
-        run: echo "::set-output name=path::$(which python3)"
+        run: echo "path=$(which python3)" >>$GITHUB_OUTPUT
 
       - name: Cache for venv
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .venv
           key: ${{ runner.os }}-venv-${{ steps.get-python.outputs.path }}-${{ hashFiles('**/poetry.lock') }}
           # We can't use restore-keys because venv should contain all required packages, otherwise fails.
 
       - name: Cache for build
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: build
           key: ${{ runner.os }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock') }}
@@ -84,7 +83,8 @@ jobs:
         run: ./run.sh --type ${{ matrix.problem-type }} --output-directory output-${{ matrix.problem-type }} --color always --all
 
       - name: Save results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
+          name: ${{ matrix.problem-type }}
           path: output-*/
           if-no-files-found: error
