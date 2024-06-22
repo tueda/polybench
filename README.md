@@ -24,6 +24,8 @@ You also need at least one or more tools to be benchmarked.
 They are (in alphabetical order):
 
 - [Fermat](https://home.bway.net/lewis/)
+- [FLINT](https://flintlib.org/): automatically downloaded via [vcpkg](https://vcpkg.io/)
+  (requires [CMake](https://cmake.org/) >= 3.15, a C compiler and the Make utility).
 - [FORM](https://www.nikhef.nl/~form/):
   if not available in the system, then
   a [release binary](https://github.com/vermaseren/form/releases)
