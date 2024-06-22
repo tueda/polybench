@@ -30,6 +30,8 @@ class Result(NamedTuple):
 class Solver:
     """Abstract solver."""
 
+    debug = False
+
     # Things that must be overridden in subclasses.
 
     _name = "None"  # Must be a unique name (without spaces).
@@ -170,11 +172,16 @@ class Solver:
             new_args = [str(args)]
 
         try:
+            if self.debug:
+                redirect = None
+            else:
+                redirect = subprocess.DEVNULL
+
             p = subprocess.run(  # noqa: S603
                 new_args,
                 input=input,
-                stdout=subprocess.PIPE if capture_output else subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
+                stdout=subprocess.PIPE if capture_output else redirect,
+                stderr=redirect,
                 universal_newlines=True,
                 timeout=timeout,
             )

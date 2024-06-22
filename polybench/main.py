@@ -557,6 +557,7 @@ def main(
 
     if debug:
         logger.setLevel(logging.DEBUG)
+        Solver.debug = True
     else:
         logger.setLevel(logging.INFO)
 
