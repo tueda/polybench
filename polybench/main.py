@@ -196,7 +196,7 @@ def run_solvers(
         # The GCD must be given as a single polynomial.
         for name, res, _ in results:
             for i, ri in enumerate(res):
-                if len(ri) != 1:
+                if len(ri.answer) != 1:
                     check_logger.error(f"{name}:{i + 1}: wrong answer")
                     wrong.add(name)
         # The GCD must be the same up to a multiplicative unit.
