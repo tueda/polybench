@@ -12,7 +12,7 @@ import sys
 import time
 from collections import OrderedDict
 from pathlib import Path
-from typing import Any, Callable, List, Optional, Sequence, Set, Tuple, cast
+from typing import Any, Callable, List, NamedTuple, Optional, Sequence, Set, cast
 
 import colorama
 import cpuinfo
@@ -110,6 +110,14 @@ def prepare_solvers(
     return tuple(available_solvers)
 
 
+class SolverResult(NamedTuple):
+    """Result from a solver."""
+
+    name: str
+    res: Sequence[Result]
+    output_dir: Path
+
+
 def run_solvers(
     solvers: Sequence[Solver],
     problems: ProblemSet,
@@ -147,7 +155,7 @@ def run_solvers(
             f" slowest: {max_t:.3f} sec on {max_i + 1 + n_warmups})"
         )
 
-    results: List[Tuple[str, Sequence[Result], Path]] = []
+    results: List[SolverResult] = []
 
     for s in solvers:
         s._problem_file = problem_file  # Yes, this is ugly.
@@ -155,40 +163,87 @@ def run_solvers(
         r = s.solve(problems)
         t2 = time.time()
         if r and len(r) == len(problems):
-            results.append((s.name, r, s._output_dir))
+            results.append(SolverResult(s.name, r, s._output_dir))
             s.logger.info(
                 f"{t2 - t1:.3f} sec{get_timing_information(r, problems.n_warmups)}"
             )
         else:
             s.logger.error("failed")
 
-    # Check the consistency.
+    # Check the consistency of the obtained results.
 
     check_logger = logger.getChild("Check")
 
     wrong: Set[str] = set()
 
+    def count_factors(pp: Sequence[Polynomial]) -> int:
+        n = 0
+        m = 0
+        for p in pp:
+            n_terms = len(p)
+            if n_terms == 0:
+                return 0
+            elif n_terms == 1:
+                if not p.is_unit:
+                    m += 1
+            else:
+                n += 1
+        if m >= 1:
+            n += 1
+        return n
+
     if problems.problem_type == "gcd":
+        # The GCD must be given as a single polynomial.
+        for name, res, _ in results:
+            for i, ri in enumerate(res):
+                if len(ri) != 1:
+                    check_logger.error(f"{name}:{i + 1}: wrong answer")
+                    wrong.add(name)
+        # The GCD must be the same up to a multiplicative unit.
         if len(results) >= 2:
             for i in range(len(problems)):
-                p0 = results[0][1][i].answer[0]
+                pp0 = results[0].res[i].answer
+                if len(pp0) != 1:
+                    continue
+                p0 = pp0[0]
                 for j in range(1, len(results)):
-                    pj = results[j][1][i].answer[0]
+                    ppj = results[j].res[i].answer
+                    if len(ppj) != 1:
+                        continue
+                    pj = ppj[0]
                     if not p0.equals_without_unit(pj):
-                        name0 = results[0][0]
-                        namej = results[j][0]
+                        name0 = results[0].name
+                        namej = results[j].name
                         check_logger.error(
                             f"{name0}:{namej}:{i + 1}: inconsistent answers"
                         )
                         wrong.add(name0)
                         wrong.add(namej)
     elif problems.problem_type == "factor":
+        # The product of the factorized polynomials must equal the original polynomial.
         for name, res, _ in results:
             for i, ri in enumerate(res):
                 product = functools.reduce(operator.mul, ri.answer, Polynomial(1))
                 if problems[i].p != product:
                     check_logger.error(f"{name}:{i + 1}: wrong answer")
                     wrong.add(name)
+        # The number of factorized polynomials must match,
+        # excluding any single-term polynomials.
+        if len(results) >= 2:
+            for i in range(len(problems)):
+                pp0 = results[0].res[i].answer
+                n0 = count_factors(pp0)
+                for j in range(1, len(results)):
+                    ppj = results[j].res[i].answer
+                    nj = count_factors(ppj)
+                    if n0 != nj:
+                        name0 = results[0].name
+                        namej = results[j].name
+                        check_logger.error(
+                            f"{name0}:{namej}:{i + 1}: inconsistent answers"
+                        )
+                        wrong.add(name0)
+                        wrong.add(namej)
 
     # Remove the solver's output directory only if succeeded.
 

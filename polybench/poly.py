@@ -13,7 +13,7 @@ class Polynomial:
     def __init__(self, expr: Union[str, int, "Polynomial"] = 0) -> None:
         """Construct a polynomial."""
         if isinstance(expr, str):
-            p = symengine.sympify(expr.lstrip("+"))  # symengine/symengine.py#331
+            p = symengine.sympify(expr)
             self._raw = symengine.expand(p)
         elif isinstance(expr, int):
             self._raw = symengine.sympify(expr)
@@ -28,7 +28,17 @@ class Polynomial:
 
     def __bool__(self) -> bool:
         """Return ``bool(self)``."""
-        return self._raw != 0  # type: ignore
+        return not self._raw.is_zero
+
+    def __len__(self) -> int:
+        """Return the number of terms in the polynomial."""
+        raw = self._raw
+        if raw.is_Add:
+            return len(raw.args)
+        elif raw.is_zero:
+            return 0
+        else:
+            return 1
 
     def __eq__(self, other: object) -> bool:
         """Return ``self == other``."""
@@ -69,3 +79,8 @@ class Polynomial:
     def equals_without_unit(self, other: "Polynomial") -> bool:
         """Return `True` if ``self == other`` up to a unit."""
         return self == other or self == -other
+
+    @property
+    def is_unit(self) -> bool:
+        """True if the polynomial is 1 or -1."""
+        return len(self) == 1 and (self == 1 or self == -1)
