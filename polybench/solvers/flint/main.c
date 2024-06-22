@@ -179,8 +179,11 @@ void do_factor(int n_variables, const char** variables, int n_polys,
     }
     for (slong i = 0; i < n; i++) {
       fmpz_mpoly_factor_get_base(p, f, i, ctx);
-      fprintf(out, ",");
+      slong k = fmpz_mpoly_factor_get_exp_si(f, i, ctx);
+      fprintf(out, ",(");
       fmpz_mpoly_fprint_pretty(out, p, variables, ctx);
+      fprintf(out, ")^");
+      flint_fprintf(out, "%{slong}", k);
     }
   } else {
     fprintf(out, ",FAILED");
