@@ -183,7 +183,7 @@ void do_factor(int n_variables, const char** variables, int n_polys,
       fprintf(out, ",(");
       fmpz_mpoly_fprint_pretty(out, p, variables, ctx);
       fprintf(out, ")^");
-      flint_fprintf(out, "%{slong}", k);
+      flint_fprintf(out, "%wd", k);
     }
   } else {
     fprintf(out, ",FAILED");
