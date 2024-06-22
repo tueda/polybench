@@ -161,6 +161,10 @@ void do_factor(int n_variables, const char** variables, int n_polys,
     error("failed to parse a polynomial");
   }
 
+  long long t1 = get_nanoseconds();
+  int result = fmpz_mpoly_factor(f, p, ctx);
+  long long t2 = get_nanoseconds();
+
   fprintf(out, "%g", (double)(t2 - t1) * 1.0e-9);
   if (result) {
     slong n = fmpz_mpoly_factor_length(f, ctx);
@@ -183,10 +187,6 @@ void do_factor(int n_variables, const char** variables, int n_polys,
   }
   fprintf(out, "\n");
 
-  long long t1 = get_nanoseconds();
-  int result = fmpz_mpoly_factor(f, p, ctx);
-  long long t2 = get_nanoseconds();
-
   fmpz_mpoly_clear(p, ctx);
   fmpz_mpoly_factor_clear(f, ctx);
   fmpz_mpoly_ctx_clear(ctx);
@@ -199,7 +199,7 @@ void solve(void (*f)(int, const char**, int, const char**, FILE*),
   char** polys;
   int n_polys = strsplit(s, ",", &polys_str, &polys);
 
-  f(n_variables, variables, n_polys, polys, out);
+  f(n_variables, variables, n_polys, (const char**)polys, out);
 
   free(polys_str);
   free(polys);
@@ -236,7 +236,7 @@ int main(int argc, char* argv[]) {
   }
 
   for (;;) {
-    const char* line = readline(infile);
+    char* line = readline(infile);
     if (!line) {
       break;
     }
@@ -244,11 +244,11 @@ int main(int argc, char* argv[]) {
     if (strncmp(line, "gcd", 3) == 0) {
       char* s = &line[4];
       s[strlen(s) - 1] = '\0';
-      solve(do_gcd, s, n_variables, variables, outfile);
+      solve(do_gcd, s, n_variables, (const char**)variables, outfile);
     } else if (strncmp(line, "factor", 6) == 0) {
       char* s = &line[7];
       s[strlen(s) - 1] = '\0';
-      solve(do_factor, s, n_variables, variables, outfile);
+      solve(do_factor, s, n_variables, (const char**)variables, outfile);
     } else {
       error("unsupported problem type");
     }
