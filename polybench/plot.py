@@ -1,4 +1,4 @@
-"""Routines for making comaprsion plots."""
+"""Routines for making comparison plots."""
 
 import itertools
 from pathlib import Path

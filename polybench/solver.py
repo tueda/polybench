@@ -44,8 +44,8 @@ class Solver:
 
     def _solve(self, problems: ProblemSet) -> Optional[Sequence[Result]]:
         # Solve the given problems and return the results. If the underlying executable
-        # has a programming langauge that is versatile enough, then the easiest way is
-        # to generate a program in the langauge that creates a CSV file for the results
+        # has a programming language that is versatile enough, then the easiest way is
+        # to generate a program in the language that creates a CSV file for the results
         # and use `parse_csv_log` (example: `MathematicaSolver`). When this method is
         # called, the current working directory is set to `output_dir` and
         # `problem_file` is accessible. One can also use files in `build_dir`.
