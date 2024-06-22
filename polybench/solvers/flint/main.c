@@ -244,11 +244,13 @@ int main(int argc, char* argv[]) {
       break;
     }
 
-    if (strncmp(line, "gcd", 3) == 0) {
+    char last_char = line[strlen(line) - 1];
+
+    if (strncmp(line, "gcd(", 4) == 0 && last_char == ')') {
       char* s = &line[4];
       s[strlen(s) - 1] = '\0';
       solve(do_gcd, s, n_variables, (const char**)variables, outfile);
-    } else if (strncmp(line, "factor", 6) == 0) {
+    } else if (strncmp(line, "factor(", 7) == 0 && last_char == ')') {
       char* s = &line[7];
       s[strlen(s) - 1] = '\0';
       solve(do_factor, s, n_variables, (const char**)variables, outfile);
