@@ -148,11 +148,12 @@ def run_solvers(
         if len(times) == 1:
             return f" ({times[0]:.3f} sec)"
         mean = statistics.mean(times)
-        stdev = statistics.stdev(times)
+        stdev = statistics.stdev(times, mean)
         max_t, max_i = max((t, i) for i, t in enumerate(times))
         return (
-            f" (average: {mean:.3f} +- {stdev:.3f} sec,"
-            f" slowest: {max_t:.3f} sec on {max_i + 1 + n_warmups})"
+            f" (mean: {mean:.3f} sec,"
+            f" SD: {stdev:.3f} sec,"
+            f" slowest: {max_t:.3f} sec on Prob. {max_i + 1 + n_warmups})"
         )
 
     results: List[SolverResult] = []
