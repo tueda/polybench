@@ -8,21 +8,23 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    # Python 3.6 is not available on Ubuntu 22.04.
+    # https://github.com/actions/setup-python/issues/544
+    runs-on: ${{ matrix.python-version != 3.6 && 'ubuntu-latest' || 'ubuntu-20.04' }}
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.7, 3.8, 3.9, '3.10', '3.11', '3.12']
+        python-version: [3.6, 3.7, 3.8, 3.9, '3.10', '3.11', '3.12']
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
 
       - name: Install Poetry (Python >= 3.8)
-        if: matrix.python-version != 3.7
+        if: matrix.python-version != 3.6 && matrix.python-version != 3.7
         run: pipx install poetry
 
-      - name: Install Poetry (Python 3.7)
-        if: matrix.python-version == 3.7
+      - name: Install Poetry (Python 3.6, 3.7)
+        if: matrix.python-version == 3.6 || matrix.python-version == 3.7
         run: |
           pipx install poetry==1.7.1
           pipx runpip poetry install packaging==21.3
@@ -40,11 +42,13 @@ jobs:
         run: poetry run pytest
 
   testrun:
-    runs-on: ubuntu-latest
+    # Python 3.6 is not available on Ubuntu 22.04.
+    # https://github.com/actions/setup-python/issues/544
+    runs-on: ${{ matrix.python-version != 3.6 && 'ubuntu-latest' || 'ubuntu-20.04' }}
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.7, 3.8, 3.9, '3.10', '3.11', '3.12']
+        python-version: [3.6, 3.7, 3.8, 3.9, '3.10', '3.11', '3.12']
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
