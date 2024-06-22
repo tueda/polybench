@@ -23,6 +23,10 @@ jobs:
         if: matrix.python-version != 3.6 && matrix.python-version != 3.7
         run: pipx install poetry
 
+      # The latest version of the packaging library, which is used when
+      # installing packages, no longer supports Python < 3.8. Here, we freeze
+      # the version of the packaging library to 21.3, which works with Python
+      # 3.6 and 3.7. Accordingly, we install Poetry 1.7.1.
       - name: Install Poetry (Python 3.6, 3.7)
         if: matrix.python-version == 3.6 || matrix.python-version == 3.7
         run: |

@@ -125,6 +125,7 @@ jobs:
       - name: Run cargo clippy
         run: cargo clippy
         working-directory: polybench/solvers/${{ matrix.solver-name }}
-        # See: https://github.com/rust-lang/rust-clippy/issues/1209
-        # env:
-        #   RUSTFLAGS: -D warnings
+        # Ensure that Clippy returns a non-zero exit status if warnings are present.
+        # https://github.com/rust-lang/rust-clippy/issues/1209#issuecomment-722968437
+        env:
+          RUSTFLAGS: -D warnings
