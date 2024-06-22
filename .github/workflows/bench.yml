@@ -68,7 +68,9 @@ jobs:
       - name: Cache for build
         uses: actions/cache@v4
         with:
-          path: build
+          path: |
+            build
+            !build/**/buildtrees
           key: ${{ runner.os }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock', 'polybench/**/vcpkg.json') }}
           restore-keys: ${{ runner.os }}-build-
 
