@@ -20,7 +20,7 @@ class FlintSolver(Solver):
         return s
 
     def _prepare(self, problems: ProblemSet) -> Optional[str]:
-        if problems.problem_type not in ("gcd",):
+        if problems.problem_type not in ("gcd", "factor"):
             return None
 
         # CMake build.

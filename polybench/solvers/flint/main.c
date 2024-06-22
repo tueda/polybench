@@ -1,8 +1,10 @@
-#include <flint/fmpz_mpoly.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
+#include <flint/fmpz_mpoly.h>
+#include <flint/fmpz_mpoly_factor.h>
 
 #include "version.h"
 
@@ -139,6 +141,70 @@ void do_gcd(int n_variables, const char** variables, int n_polys,
   fmpz_mpoly_ctx_clear(ctx);
 }
 
+void do_factor(int n_variables, const char** variables, int n_polys,
+               const char** polys, FILE* out) {
+  if (n_polys != 1) {
+    error("npolys != 1");
+  }
+
+  fmpz_mpoly_ctx_t ctx;
+  fmpz_mpoly_t p;
+  fmpz_mpoly_factor_t f;
+  fmpz_t c;
+
+  fmpz_mpoly_ctx_init(ctx, n_variables, ORD_LEX);
+  fmpz_mpoly_init(p, ctx);
+  fmpz_mpoly_factor_init(f, ctx);
+  fmpz_init(c);
+
+  if (fmpz_mpoly_set_str_pretty(p, polys[0], variables, ctx)) {
+    error("failed to parse a polynomial");
+  }
+
+  fprintf(out, "%g", (double)(t2 - t1) * 1.0e-9);
+  if (result) {
+    slong n = fmpz_mpoly_factor_length(f, ctx);
+    fmpz_mpoly_factor_get_constant_fmpz(c, f, ctx);
+    if (fmpz_is_one(c)) {
+      if (n == 0) {
+        fprintf(out, ",1");
+      }
+    } else {
+      fprintf(out, ",");
+      fmpz_fprint(out, c);
+    }
+    for (slong i = 0; i < n; i++) {
+      fmpz_mpoly_factor_get_base(p, f, i, ctx);
+      fprintf(out, ",");
+      fmpz_mpoly_fprint_pretty(out, p, variables, ctx);
+    }
+  } else {
+    fprintf(out, ",FAILED");
+  }
+  fprintf(out, "\n");
+
+  long long t1 = get_nanoseconds();
+  int result = fmpz_mpoly_factor(f, p, ctx);
+  long long t2 = get_nanoseconds();
+
+  fmpz_mpoly_clear(p, ctx);
+  fmpz_mpoly_factor_clear(f, ctx);
+  fmpz_mpoly_ctx_clear(ctx);
+  fmpz_clear(c);
+}
+
+void solve(void (*f)(int, const char**, int, const char**, FILE*),
+           const char* s, int n_variables, const char** variables, FILE* out) {
+  char* polys_str;
+  char** polys;
+  int n_polys = strsplit(s, ",", &polys_str, &polys);
+
+  f(n_variables, variables, n_polys, polys, out);
+
+  free(polys_str);
+  free(polys);
+}
+
 int main(int argc, char* argv[]) {
   if (argc == 2 && strcmp(argv[1], "-v") == 0) {
     printf("flint %s, %s\n", FLINT_VERSION, COMPILER_VERSION);
@@ -178,15 +244,11 @@ int main(int argc, char* argv[]) {
     if (strncmp(line, "gcd", 3) == 0) {
       char* s = &line[4];
       s[strlen(s) - 1] = '\0';
-
-      char* polys_str;
-      char** polys;
-      int n_polys = strsplit(s, ",", &polys_str, &polys);
-
-      do_gcd(n_variables, variables, n_polys, polys, outfile);
-
-      free(polys_str);
-      free(polys);
+      solve(do_gcd, s, n_variables, variables, outfile);
+    } else if (strncmp(line, "factor", 6) == 0) {
+      char* s = &line[7];
+      s[strlen(s) - 1] = '\0';
+      solve(do_factor, s, n_variables, variables, outfile);
     } else {
       error("unsupported problem type");
     }
