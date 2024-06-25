@@ -17,8 +17,8 @@ run030() {
   nvars=$1
   shift
   run020 \
-    --output-directory "$result_dir/$output_dir-$nvars" \
-    --nvars $nvars \
+    --output-directory "$result_dir/$output_dir/$(printf "%02d" "$nvars")" \
+    --nvars "$nvars" \
     --nproblems 200 \
     --max-nterms 50 \
     "$@"
