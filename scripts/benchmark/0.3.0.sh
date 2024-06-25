@@ -18,7 +18,7 @@ run030() {
   shift
   run020 \
     --output-directory "$result_dir/$output_dir-$nvars" \
-    --nvars $nvars
+    --nvars $nvars \
     --nproblems 200 \
     --max-nterms 50 \
     "$@"
