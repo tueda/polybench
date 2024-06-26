@@ -3,11 +3,10 @@ FROM ubuntu:focal
 # NOTE: m4 and make are needed for gmp-mpfr-sys
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   cargo=0.42.* \
-  cmake=3.16.* \
+  openjdk-11-jdk-headless=11.0.* \
   form=4.2.* \
   m4=1.4.* \
   make=4.2.* \
-  openjdk-11-jdk-headless=11.0.* \
   python3-pip=20.0.* \
   singular-ui=1:4.1.* \
   && rm -rf /var/lib/apt/lists/* \
