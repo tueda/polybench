@@ -62,6 +62,31 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Cache for pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ env.pythonLocation }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ env.pythonLocation }}-
+            ${{ runner.os }}-pip-
+
+      - name: Cache for Poetry
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ env.pythonLocation }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-${{ env.pythonLocation }}-
+            ${{ runner.os }}-poetry-
+
+      - name: Cache for vcpkg
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/vcpkg/archives
+          key: ${{ runner.os }}-vcpkg-${{ hashFiles('**/vcpkg.json') }}
+          restore-keys: ${{ runner.os }}-vcpkg-
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -91,26 +116,15 @@ jobs:
           packages: singular-ui
 
       # NOTE: for testing purposes, we don't cache the entire contents of venv;
-      # instead, we only cache the packages downloaded by pip.
-      - name: Cache for pip
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: ${{ runner.os }}-pip-
-
-      - name: Cache for Poetry
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pypoetry
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: ${{ runner.os }}-poetry-
+      # cf. bench.yml.
 
       - name: Cache for build
         uses: actions/cache@v4
         with:
-          path: build
-          key: ${{ runner.os }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock') }}
+          path: |
+            build
+            !build/**/buildtrees
+          key: ${{ runner.os }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock', 'polybench/**/vcpkg.json') }}
           restore-keys: ${{ runner.os }}-build-
 
       - name: Build

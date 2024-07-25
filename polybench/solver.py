@@ -305,6 +305,11 @@ class Solver:
                     shutil.copy2(p, q)
 
     @property
+    def cmake_command(self) -> Sequence[str]:
+        """Return the CMake command."""
+        return [shutil.which("cmake") or "cmake"]
+
+    @property
     def gradlew_command(self) -> Sequence[str]:
         """Return the gradlew command."""
         # We assume that the gradlew script exists in `build_dir` (typically prepared

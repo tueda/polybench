@@ -25,6 +25,31 @@ jobs:
         with:
           python-version: '3.10'
 
+      - name: Cache for pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ env.pythonLocation }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ env.pythonLocation }}-
+            ${{ runner.os }}-pip-
+
+      - name: Cache for Poetry
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ env.pythonLocation }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-${{ env.pythonLocation }}-
+            ${{ runner.os }}-poetry-
+
+      - name: Cache for vcpkg
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/vcpkg/archives
+          key: ${{ runner.os }}-vcpkg-${{ hashFiles('**/vcpkg.json') }}
+          restore-keys: ${{ runner.os }}-vcpkg-
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -42,7 +67,7 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('polybench/**/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
 
       - name: Set up Rust
@@ -53,23 +78,20 @@ jobs:
         with:
           packages: singular-ui
 
-      - name: Get Python path
-        id: get-python
-        shell: bash
-        run: echo "path=$(which python3)" >>$GITHUB_OUTPUT
-
       - name: Cache for venv
         uses: actions/cache@v4
         with:
           path: .venv
-          key: ${{ runner.os }}-venv-${{ steps.get-python.outputs.path }}-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-venv-${{ env.pythonLocation }}-${{ hashFiles('**/poetry.lock') }}
           # We can't use restore-keys because venv should contain all required packages, otherwise fails.
 
       - name: Cache for build
         uses: actions/cache@v4
         with:
-          path: build
-          key: ${{ runner.os }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock') }}
+          path: |
+            build
+            !build/**/buildtrees
+          key: ${{ runner.os }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock', 'polybench/**/vcpkg.json') }}
           restore-keys: ${{ runner.os }}-build-
 
       - name: Build
