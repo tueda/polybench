@@ -8,7 +8,7 @@ from ..solver import Result, Solver
 
 
 class ReformSolver(Solver):
-    """reFORM  Solver."""
+    """reFORM Solver."""
 
     _name = "reFORM"
 

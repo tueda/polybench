@@ -1,7 +1,7 @@
 [package]
 name = "polybench-reform"
 version = "0.1.0"
-authors = ["Takahiro Ueda <tueda@st.seikei.ac.jp>"]
+authors = ["Takahiro Ueda <t.ueda.od@juntendo.ac.jp>"]
 edition = "2018"
 
 [dependencies]
