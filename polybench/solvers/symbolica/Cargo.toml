@@ -5,4 +5,4 @@ authors = ["Takahiro Ueda <t.ueda.od@juntendo.ac.jp>"]
 edition = "2021"
 
 [dependencies]
-symbolica = "0.8.2"
+symbolica = "0.9.0"
