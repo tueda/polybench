@@ -1,6 +1,28 @@
 # Changelog
 
 
+<a name="0.3.0"></a>
+## [0.3.0] (2024-08-17)
+
+### Chore
+- form 4.3.1
+  ([06197f3](https://github.com/tueda/polybench/commit/06197f33dc36a1b1852b02b2ae5fcfe9c1479c57))
+- support Python 3.11 and 3.12
+  ([cf41141](https://github.com/tueda/polybench/commit/cf41141262f9d1619cfdbb0b292a97f8ec8253fd))
+
+
+### Feat
+- add FLINT solver ([#4](https://github.com/tueda/polybench/issues/4))
+  ([b4549a7](https://github.com/tueda/polybench/commit/b4549a76e10f29a2df2e235076a86c0bab40adec))
+- ensure the printed timings are unambiguous
+  ([21b6087](https://github.com/tueda/polybench/commit/21b6087d53d83a290e818dd9f9153d0d491b5796))
+- stop discarding output by subprocesses when --debug is on
+  ([780def0](https://github.com/tueda/polybench/commit/780def0d9392cbfa5c31dcf7aaa8c99f196f5daa))
+- more consistency checks on the obtained results
+  ([d9294f5](https://github.com/tueda/polybench/commit/d9294f5cf1ac8794b2036df304eb9c0c7ffda8ae))
+  ([48a22f5](https://github.com/tueda/polybench/commit/48a22f57e8b3f675c3eb23b5e6e719e836e172aa))
+
+
 <a name="0.2.0"></a>
 ## [0.2.0] (2021-12-27)
 
@@ -42,4 +64,5 @@
 - First public version.
 
 
+[0.3.0]: https://github.com/tueda/polybench/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/tueda/polybench/compare/0.1.0...0.2.0
