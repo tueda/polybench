@@ -1,0 +1,8 @@
+[package]
+name = "polybench-symbolica"
+version = "0.1.0"
+authors = ["Takahiro Ueda <t.ueda.od@juntendo.ac.jp>"]
+edition = "2021"
+
+[dependencies]
+symbolica = "0.8.2"

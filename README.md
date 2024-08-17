@@ -39,6 +39,10 @@ They are (in alphabetical order):
   automatically downloaded
   (requires [JDK](https://www.oracle.com/technetwork/java/) >= 8).
 - [Singular](https://www.singular.uni-kl.de/)
+- [Symbolica](https://symbolica.io/):
+  automatically downloaded
+  (requires [Rust](https://www.rust-lang.org/) >= 1.73),
+  running in [restricted mode](https://symbolica.io/docs/get_started.html#license).
 
 
 Getting started

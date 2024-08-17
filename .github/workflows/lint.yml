@@ -97,7 +97,7 @@ jobs:
   cargo-check:
     strategy:
       matrix:
-        solver-name: [reform]
+        solver-name: [reform, symbolica]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
