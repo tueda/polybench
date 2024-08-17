@@ -4,16 +4,24 @@
 <a name="0.3.0"></a>
 ## [0.3.0] (2024-08-17)
 
-### Chore
-- form 4.3.1
-  ([06197f3](https://github.com/tueda/polybench/commit/06197f33dc36a1b1852b02b2ae5fcfe9c1479c57))
-- support Python 3.11 and 3.12
+### Added
+
+- Symbolica solver.
+  ([#3](https://github.com/tueda/polybench/issues/3))
+
+- FLINT solver.
+  ([#4](https://github.com/tueda/polybench/issues/4))
+
+### Changed
+
+- Support Python 3.11 and 3.12.
   ([cf41141](https://github.com/tueda/polybench/commit/cf41141262f9d1619cfdbb0b292a97f8ec8253fd))
 
+- **form:** Upgrade to version 4.3.1.
+  ([06197f3](https://github.com/tueda/polybench/commit/06197f33dc36a1b1852b02b2ae5fcfe9c1479c57))
 
-### Feat
-- add FLINT solver ([#4](https://github.com/tueda/polybench/issues/4))
-  ([b4549a7](https://github.com/tueda/polybench/commit/b4549a76e10f29a2df2e235076a86c0bab40adec))
+### Feat (TODO)
+
 - ensure the printed timings are unambiguous
   ([21b6087](https://github.com/tueda/polybench/commit/21b6087d53d83a290e818dd9f9153d0d491b5796))
 - stop discarding output by subprocesses when --debug is on
