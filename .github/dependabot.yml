@@ -1,0 +1,40 @@
+version: 2
+
+updates:
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    allow:
+      - dependency-type: direct
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    allow:
+      - dependency-type: direct
+
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+    allow:
+      - dependency-type: direct
+
+  - package-ecosystem: cargo
+    directories:
+      - /polybench/solvers/reform
+      - /polybench/solvers/symbolica
+    schedule:
+      interval: weekly
+    allow:
+      - dependency-type: direct
+
+  - package-ecosystem: gradle
+    directories:
+      - /polybench/solvers/rings
+    schedule:
+      interval: weekly
+    allow:
+      - dependency-type: direct
