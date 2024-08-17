@@ -118,7 +118,8 @@ ReFORM has no factorisation functionality.
 Mathematica exceeded the timeout of 60 minutes for the "nontrivial-factor" test.
 
 
-# Development
+Development
+-----------
 
 ```bash
 # Initialisation
