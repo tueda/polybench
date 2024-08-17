@@ -114,8 +114,38 @@ Example
 
 ![nontrivial-gcd](https://github.com/tueda/polybench-result/raw/b31989da7eef19faf127bac177ad8d89a7e51e2c/0.2.0/0004.figures/summary.png)
 
-ReFORM has no factorization functionality.
+ReFORM has no factorisation functionality.
 Mathematica exceeded the timeout of 60 minutes for the "nontrivial-factor" test.
+
+
+# Development
+
+```bash
+# Initialisation
+poetry install
+pre-commit install
+
+# Linting and testing
+pre-commit run --all-files
+poetry run pytest
+
+# Linting and testing for Cargo subproject
+cd path/to/project
+cargo fmt
+cargo clippy
+cargo test
+
+# Linting and testing for Gradle subproject
+cd path/to/project
+./gradlew spotlessApply
+./gradlew check
+
+# Test run
+./run.sh <options>  # for example, --all
+
+# Release a new version
+./scripts/make-release.sh <new_version>  # for example, 0.3.0rc1
+```
 
 
 License
