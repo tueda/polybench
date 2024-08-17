@@ -1,5 +1,5 @@
 [general]
-ignore=body-is-missing
+ignore=body-min-length,body-is-missing
 contrib=contrib-title-conventional-commits
 
 [title-max-length]
@@ -7,6 +7,12 @@ line-length=80
 
 [body-max-line-length]
 line-length=80
+
+[ignore-by-title]
+regex=^Merge(.*)into(.*)
+
+[ignore-by-author-name]
+regex=dependabot
 
 [contrib-title-conventional-commits]
 types = build,chore,ci,docs,feat,fix,perf,refactor,revert,style,test
