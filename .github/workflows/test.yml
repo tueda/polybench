@@ -141,3 +141,61 @@ jobs:
 
       - name: Test run (trivial-factor)
         run: ./run.sh --type trivial-factor --max-nterms 5 --color always --all
+
+  testrun-java:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        # Only LTS versions. Java 11 is already tested in the above "testrun" job.
+        java-version: [8, 17, 21]
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Cache for pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ env.pythonLocation }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ env.pythonLocation }}-
+            ${{ runner.os }}-pip-
+
+      - name: Cache for Poetry
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ env.pythonLocation }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-${{ env.pythonLocation }}-
+            ${{ runner.os }}-poetry-
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java-version }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Build
+        run: ./run.sh --build-only --color always --debug --rings
+
+      - name: Test run (nontrivial-gcd)
+        run: ./run.sh --type nontrivial-gcd --max-nterms 5 --color always --rings
+
+      - name: Test run (trivial-gcd)
+        run: ./run.sh --type trivial-gcd --max-nterms 5 --color always --rings
+
+      - name: Test run (nontrivial-factor)
+        run: ./run.sh --type nontrivial-factor --max-nterms 5 --color always --rings
+
+      - name: Test run (trivial-factor)
+        run: ./run.sh --type trivial-factor --max-nterms 5 --color always --rings
