@@ -101,25 +101,26 @@ docker run -it --rm polybench:latest
 Example
 -------
 
-|                |                                                                 |
-|----------------|-----------------------------------------------------------------|
-| platform       | Linux-3.10.0-957.21.3.el7.x86_64-x86_64-with-glibc2.23          |
-| python_version | 3.9.9.final.0 (64 bit)                                          |
-| cpu_brand      | Intel(R) Xeon(R) Gold 6248 CPU @ 2.50GHz                        |
-| cpu_count      | 40                                                              |
-| total_memory   | 754.6GB                                                         |
-| FORM           | FORM 4.2.1 (Nov 21 2018, v4.2.1) 64-bits                        |
-| Mathematica    | 13.0.0 for Linux x86 (64-bit) (December 10, 2021)               |
-| reFORM         | 0.1.0-fix-serialize, rustc 1.56.1                               |
-| Rings          | 2.5.8, JVM: 17.0.1 (Homebrew 17.0.1+1)                          |
-| Singular       | Singular for x86_64-Linux version 4.2.1 (4210, 64 bit) May 2021 |
+|                |                                                                              |
+|----------------|------------------------------------------------------------------------------|
+| platform       | Linux-5.15.0-84-generic-x86_64-with-glibc2.29                                |
+| python_version | 3.8.10.final.0 (64 bit)                                                      |
+| cpu_brand      | 12th Gen Intel(R) Core(TM) i9-12900                                          |
+| cpu_count      | 16 (logical: 24)                                                             |
+| total_memory   | 62.6GB                                                                       |
+| FLINT          | flint 2.9.0, cc (GNU) 10.5.0                                                 |
+| FORM           | FORM 4.3.1 (Apr 11 2023, v4.3.1) 64-bits                                     |
+| Mathematica    | 14.1.0 for Linux x86 (64-bit) (July 22, 2024)                                |
+| reFORM         | 0.1.0-fix-serialize, rustc 1.81.0 (eeb90cda1 2024-09-04)                     |
+| Rings          | 2.5.8, JVM: 11.0.20.1 (Ubuntu 11.0.20.1+1-post-Ubuntu-0ubuntu120.04)         |
+| Singular       | Singular for x86_64-Linux version 4.4.0 (44002, 64 bit) May 29 2024 14:14:10 |
+| Symbolica      | 0.11.0, rustc 1.81.0 (eeb90cda1 2024-09-04)                                  |
 
-![nontrivial-gcd](https://github.com/tueda/polybench-result/raw/b31989da7eef19faf127bac177ad8d89a7e51e2c/0.2.0/0002.figures/summary.png)
+![nontrivial-gcd](https://raw.githubusercontent.com/tueda/polybench-result/refs/heads/main/0.3.0/05/0002.figures/summary.png)
 
-![nontrivial-gcd](https://github.com/tueda/polybench-result/raw/b31989da7eef19faf127bac177ad8d89a7e51e2c/0.2.0/0004.figures/summary.png)
+![nontrivial-factor](https://raw.githubusercontent.com/tueda/polybench-result/refs/heads/main/0.3.0/05/0004.figures/summary.png)
 
-ReFORM has no factorisation functionality.
-Mathematica exceeded the timeout of 60 minutes for the "nontrivial-factor" test.
+Additional benchmark results are available [here](https://github.com/tueda/polybench-result/tree/main).
 
 
 Development
