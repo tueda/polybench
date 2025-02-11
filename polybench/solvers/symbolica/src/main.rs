@@ -3,12 +3,11 @@ use std::fs::File;
 use std::io::{BufRead, BufReader, LineWriter, Write};
 use std::sync::Arc;
 use std::time::Instant;
-use symbolica::atom::Atom;
 use symbolica::domains::integer::Z;
 use symbolica::poly::factor::Factorize;
 use symbolica::poly::polynomial::MultivariatePolynomial;
 use symbolica::poly::Variable;
-use symbolica::state::State;
+use symbolica::{atom::AtomCore, parse, symbol};
 
 fn main() {
     let args: Vec<_> = env::args().collect();
@@ -22,12 +21,8 @@ fn main() {
 
     let mut output = LineWriter::new(output_file);
 
-    let var_map: Arc<Vec<Variable>> = Arc::new(
-        variables
-            .iter()
-            .map(|x| State::get_symbol(x).into())
-            .collect(),
-    );
+    let var_map: Arc<Vec<Variable>> =
+        Arc::new(variables.iter().map(|x| symbol!(x).into()).collect());
 
     for line in BufReader::new(input_file).lines() {
         let line = line.unwrap();
@@ -97,8 +92,8 @@ fn main() {
     }
 }
 
-fn get_poly(expr: &str, var_map: &Arc<Vec<Variable>>) -> MultivariatePolynomial<Z> {
-    Atom::parse(expr)
+fn get_poly(expr: &str, var_map: &Arc<Vec<Variable>>) -> MultivariatePolynomial<Z, u8> {
+    parse!(expr)
         .unwrap()
         .to_polynomial(&Z, Some(var_map.clone()))
 }
