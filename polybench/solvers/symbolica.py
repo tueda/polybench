@@ -38,11 +38,7 @@ class SymbolicaSolver(Solver):
         args = [variables, str(self.problem_file), str(log_file)]
         if not self.run(
             [
-                *self.cargo_command,
-                "run",
-                f"--manifest-path={self._build_dir}/Cargo.toml",
-                "--release",
-                "--",
+                f"{self._build_dir}/target/release/polybench-symbolica",
                 *args,
             ]
         ):
