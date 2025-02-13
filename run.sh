@@ -35,10 +35,16 @@ END
     then
       # Use Poetry for Python >= 3.7.
       $venv_python3 -m pip install poetry
+      poetry_version=$($venv_python3 -m pip show poetry 2>/dev/null | awk '/Version:/ {print $2}')
+      poetry_major_version=$(echo "$poetry_version" | cut -d. -f1)
       (
         cd $root_path
         $venv_python3 -m poetry config --local virtualenvs.in-project true
-        $venv_python3 -m poetry install --no-dev --no-interaction --no-root
+        if [[ "$poetry_major_version" -ge 2 ]]; then
+          $venv_python3 -m poetry install --only main --no-interaction --no-root
+        else
+          $venv_python3 -m poetry install --no-dev --no-interaction --no-root
+        fi
       )
     else
       # Poetry 1.1.15 (installed for Python 3.6) fails to read lock files
