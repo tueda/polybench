@@ -8,9 +8,7 @@ on:
 
 jobs:
   test:
-    # Python 3.6 is not available on Ubuntu 22.04.
-    # https://github.com/actions/setup-python/issues/544
-    runs-on: ${{ matrix.python-version != 3.6 && 'ubuntu-latest' || 'ubuntu-20.04' }}
+    runs-on: ${{ matrix.python-version == 3.6 && 'ubuntu-20.04' || matrix.python-version == 3.7 && 'ubuntu-22.04' || 'ubuntu-latest' }}
     strategy:
       fail-fast: false
       matrix:
@@ -46,9 +44,7 @@ jobs:
         run: poetry run pytest
 
   testrun:
-    # Python 3.6 is not available on Ubuntu 22.04.
-    # https://github.com/actions/setup-python/issues/544
-    runs-on: ${{ matrix.python-version != 3.6 && 'ubuntu-latest' || 'ubuntu-20.04' }}
+    runs-on: ${{ matrix.python-version == 3.6 && 'ubuntu-20.04' || matrix.python-version == 3.7 && 'ubuntu-22.04' || 'ubuntu-latest' }}
     strategy:
       fail-fast: false
       matrix:
