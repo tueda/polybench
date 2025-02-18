@@ -1,5 +1,21 @@
 # Changelog
 
+<a name="0.3.1"></a>
+## [0.3.1] (2025-02-18)
+
+### Changed
+
+- Support Python 3.13.
+  ([0816c8f](https://github.com/tueda/polybench/commit/0816c8f230816310c92846d79aa04a587da89761))
+
+- Upgrade Symbolica to 0.15.1.
+  ([#31](https://github.com/tueda/polybench/pull/31),
+  [9af9d77](https://github.com/tueda/polybench/commit/9af9d771fcb8a256ed591a194adece229defdbce))
+
+### Fixed
+- Ensure compatibility with Poetry v2.
+  ([5680deb](https://github.com/tueda/polybench/commit/5680debfb6c58373e7e397f0c1cc7f68e55fb0b2))
+
 <a name="0.3.0"></a>
 ## [0.3.0] (2024-09-28)
 
@@ -70,5 +86,6 @@
 - First public version.
 
 
+[0.3.1]: https://github.com/tueda/polybench/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/tueda/polybench/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/tueda/polybench/compare/0.1.0...0.2.0
