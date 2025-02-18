@@ -111,14 +111,14 @@ Example
 | FLINT          | flint 2.9.0, cc (GNU) 10.5.0                                                 |
 | FORM           | FORM 4.3.1 (Apr 11 2023, v4.3.1) 64-bits                                     |
 | Mathematica    | 14.1.0 for Linux x86 (64-bit) (July 22, 2024)                                |
-| reFORM         | 0.1.0-fix-serialize, rustc 1.81.0 (eeb90cda1 2024-09-04)                     |
+| reFORM         | 0.1.0-fix-serialize, rustc 1.84.1 (e71f9a9a9 2025-01-27)                     |
 | Rings          | 2.5.8, JVM: 11.0.20.1 (Ubuntu 11.0.20.1+1-post-Ubuntu-0ubuntu120.04)         |
-| Singular       | Singular for x86_64-Linux version 4.4.0 (44002, 64 bit) May 29 2024 14:14:10 |
-| Symbolica      | 0.11.0, rustc 1.81.0 (eeb90cda1 2024-09-04)                                  |
+| Singular       | Singular for x86_64-Linux version 4.4.1 (44100, 64 bit) Jan 2025             |
+| Symbolica      | 0.15.0, rustc 1.84.1 (e71f9a9a9 2025-01-27)                                  |
 
-![nontrivial-gcd](https://raw.githubusercontent.com/tueda/polybench-result/refs/heads/main/0.3.0/05/0002.figures/summary.png)
+![nontrivial-gcd](https://raw.githubusercontent.com/tueda/polybench-result/refs/heads/main/0.3.1/05/0002.figures/summary.png)
 
-![nontrivial-factor](https://raw.githubusercontent.com/tueda/polybench-result/refs/heads/main/0.3.0/05/0004.figures/summary.png)
+![nontrivial-factor](https://raw.githubusercontent.com/tueda/polybench-result/refs/heads/main/0.3.1/05/0004.figures/summary.png)
 
 Additional benchmark results are available [here](https://github.com/tueda/polybench-result/tree/main).
 
