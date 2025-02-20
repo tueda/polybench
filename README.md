@@ -1,7 +1,7 @@
 polybench
 =========
 
-[![Test](https://github.com/tueda/polybench/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/tueda/polybench/actions?query=branch:master)
+[![Test](https://github.com/tueda/polybench/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/tueda/polybench/actions?query=branch:main)
 [![PyPI version](https://badge.fury.io/py/polybench.svg)](https://pypi.org/project/polybench/)
 
 Multivariate polynomial arithmetic benchmark tests.
@@ -157,4 +157,4 @@ cd path/to/project
 License
 -------
 
-[MIT](https://github.com/tueda/polybench/blob/master/LICENSE)
+[MIT](https://github.com/tueda/polybench/blob/main/LICENSE)
