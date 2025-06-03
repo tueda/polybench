@@ -8,25 +8,25 @@ on:
 
 jobs:
   test:
-    runs-on: ${{ matrix.python-version == 3.6 && 'ubuntu-20.04' || matrix.python-version == 3.7 && 'ubuntu-22.04' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.python-version == 3.7 && 'ubuntu-22.04' || 'ubuntu-latest' }}
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9, '3.10', '3.11', '3.12', '3.13']
+        python-version: [3.7, 3.8, 3.9, '3.10', '3.11', '3.12', '3.13']
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
 
       - name: Install Poetry (Python >= 3.8)
-        if: matrix.python-version != 3.6 && matrix.python-version != 3.7
+        if: matrix.python-version != 3.7
         run: pipx install poetry
 
       # The latest version of the packaging library, which is used when
       # installing packages, no longer supports Python < 3.8. Here, we freeze
       # the version of the packaging library to 21.3, which works with Python
-      # 3.6 and 3.7. Accordingly, we install Poetry 1.7.1.
-      - name: Install Poetry (Python 3.6, 3.7)
-        if: matrix.python-version == 3.6 || matrix.python-version == 3.7
+      # 3.7. Accordingly, we install Poetry 1.7.1.
+      - name: Install Poetry (Python 3.7)
+        if: matrix.python-version == 3.7
         run: |
           pipx install poetry==1.7.1
           pipx runpip poetry install packaging==21.3
@@ -44,11 +44,11 @@ jobs:
         run: poetry run pytest
 
   testrun:
-    runs-on: ${{ matrix.python-version == 3.6 && 'ubuntu-20.04' || matrix.python-version == 3.7 && 'ubuntu-22.04' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.python-version == 3.7 && 'ubuntu-22.04' || 'ubuntu-latest' }}
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9, '3.10', '3.11', '3.12', '3.13']
+        python-version: [3.7, 3.8, 3.9, '3.10', '3.11', '3.12', '3.13']
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
