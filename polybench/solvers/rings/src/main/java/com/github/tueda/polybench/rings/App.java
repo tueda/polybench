@@ -21,31 +21,24 @@ public class App {
     final Path inputFile = Paths.get(args[1]);
     final Path outputFile = Paths.get(args[2]);
 
-    final BufferedReader in = Files.newBufferedReader(inputFile);
-    try {
-      final PrintWriter out = new PrintWriter(Files.newBufferedWriter(outputFile));
-      try {
-        while (true) {
-          final String line = in.readLine();
-          if (line == null) {
-            break;
-          }
-          String answer;
-          if (line.startsWith("gcd")) {
-            answer = doGcd(line, variables);
-          } else if (line.startsWith("factor")) {
-            answer = doFactor(line, variables);
-          } else {
-            String problemType = line.length() > 8 ? line.substring(0, 8) + "..." : line;
-            throw new IllegalArgumentException("unknown problem type: " + problemType);
-          }
-          out.println(answer);
+    try (BufferedReader in = Files.newBufferedReader(inputFile);
+        PrintWriter out = new PrintWriter(Files.newBufferedWriter(outputFile))) {
+      while (true) {
+        final String line = in.readLine();
+        if (line == null) {
+          break;
         }
-      } finally {
-        out.close();
+        String answer;
+        if (line.startsWith("gcd")) {
+          answer = doGcd(line, variables);
+        } else if (line.startsWith("factor")) {
+          answer = doFactor(line, variables);
+        } else {
+          String problemType = line.length() > 8 ? line.substring(0, 8) + "..." : line;
+          throw new IllegalArgumentException("unknown problem type: " + problemType);
+        }
+        out.println(answer);
       }
-    } finally {
-      in.close();
     }
   }
 
