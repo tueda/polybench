@@ -1,5 +1,20 @@
 # Changelog
 
+
+<a name="0.3.2"></a>
+## [0.3.2] (2025-06-06)
+
+### Changed
+
+- Upgrade Symbolica to 0.16.0.
+  ([16baff8](https://github.com/tueda/polybench/commit/16baff854b1ac89df05fa66bc68f557ce250b3b2))
+
+### Fixed
+
+- **flint:** Resolve 404 error.
+  ([e270cb9](https://github.com/tueda/polybench/commit/e270cb9af797f554e6fc5a9ae8108d0dff3a4ae1))
+
+
 <a name="0.3.1"></a>
 ## [0.3.1] (2025-02-18)
 
@@ -15,6 +30,7 @@
 ### Fixed
 - Ensure compatibility with Poetry v2.
   ([5680deb](https://github.com/tueda/polybench/commit/5680debfb6c58373e7e397f0c1cc7f68e55fb0b2))
+
 
 <a name="0.3.0"></a>
 ## [0.3.0] (2024-09-28)
@@ -86,6 +102,7 @@
 - First public version.
 
 
+[0.3.2]: https://github.com/tueda/polybench/compare/0.3.1...0.3.2
 [0.3.1]: https://github.com/tueda/polybench/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/tueda/polybench/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/tueda/polybench/compare/0.1.0...0.2.0
