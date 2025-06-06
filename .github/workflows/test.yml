@@ -138,6 +138,85 @@ jobs:
       - name: Test run (trivial-factor)
         run: ./run.sh --type trivial-factor --max-nterms 5 --color always --all
 
+  testrun-on-container:
+    runs-on: ubuntu-latest
+    container: python:${{ matrix.python-version }}
+    env:
+      PIP_CACHE_DIR: /tmp/pip-cache
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.6]
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Cache for pip
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.PIP_CACHE_DIR }}
+          key: python:${{ matrix.python-version }}-pip-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: python:${{ matrix.python-version }}-pip-
+
+      - name: Cache for vcpkg
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/vcpkg/archives
+          key: python:${{ matrix.python-version }}-vcpkg-${{ hashFiles('**/vcpkg.json') }}
+          restore-keys: python:${{ matrix.python-version }}-vcpkg-
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 11
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Cache for Cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: python:${{ matrix.python-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: python:${{ matrix.python-version }}-cargo-
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y -q cmake singular-ui zip
+
+      - name: Cache for build
+        uses: actions/cache@v4
+        with:
+          path: |
+            build
+            !build/**/buildtrees
+          key: python:${{ matrix.python-version }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock', 'polybench/**/vcpkg.json') }}
+          restore-keys: python:${{ matrix.python-version }}-build-
+
+      - name: Build
+        run: ./run.sh --build-only --color always --debug --all
+
+      - name: Test run (nontrivial-gcd)
+        run: ./run.sh --type nontrivial-gcd --max-nterms 5 --color always --all
+
+      - name: Test run (trivial-gcd)
+        run: ./run.sh --type trivial-gcd --max-nterms 5 --color always --all
+
+      - name: Test run (nontrivial-factor)
+        run: ./run.sh --type nontrivial-factor --max-nterms 5 --color always --all
+
+      - name: Test run (trivial-factor)
+        run: ./run.sh --type trivial-factor --max-nterms 5 --color always --all
+
   testrun-java:
     runs-on: ubuntu-22.04
     strategy:
