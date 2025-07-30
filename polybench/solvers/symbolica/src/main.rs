@@ -74,14 +74,14 @@ fn main() {
             )
             .unwrap();
             if !monomial_factor.is_one() {
-                write!(&mut output, ",{}", monomial_factor).unwrap();
+                write!(&mut output, ",{monomial_factor}").unwrap();
             }
             for (f, p) in factors {
                 if f.nterms() != 1 {
                     if p == 1 {
-                        write!(&mut output, ",{}", f).unwrap();
+                        write!(&mut output, ",{f}").unwrap();
                     } else {
-                        write!(&mut output, ",({})^{}", f, p).unwrap();
+                        write!(&mut output, ",({f})^{p}").unwrap();
                     }
                 }
             }
