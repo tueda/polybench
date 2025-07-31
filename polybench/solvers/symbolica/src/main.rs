@@ -93,7 +93,5 @@ fn main() {
 }
 
 fn get_poly(expr: &str, var_map: &Arc<Vec<Variable>>) -> MultivariatePolynomial<Z, u8> {
-    parse!(expr)
-        .unwrap()
-        .to_polynomial(&Z, Some(var_map.clone()))
+    parse!(expr).to_polynomial(&Z, Some(var_map.clone()))
 }

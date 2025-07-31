@@ -42,7 +42,7 @@ They are (in alphabetical order):
 - [Singular](https://www.singular.uni-kl.de/)
 - [Symbolica](https://symbolica.io/):
   automatically downloaded
-  (requires [Rust](https://www.rust-lang.org/) >= 1.73),
+  (requires [Rust](https://www.rust-lang.org/) >= 1.85),
   running in [restricted mode](https://symbolica.io/docs/get_started.html#license).
 
 
