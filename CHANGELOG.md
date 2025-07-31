@@ -1,6 +1,15 @@
 # Changelog
 
 
+<a name="0.3.3"></a>
+## [0.3.3] (2025-07-31)
+
+### Changed
+
+- Upgrade Symbolica to 0.17.0.
+  ([eb95f60](https://github.com/tueda/polybench/commit/eb95f6063c7620769d6ccc9812e67aa4d9754a06))
+
+
 <a name="0.3.2"></a>
 ## [0.3.2] (2025-06-06)
 
@@ -102,6 +111,7 @@
 - First public version.
 
 
+[0.3.3]: https://github.com/tueda/polybench/compare/0.3.2...0.3.3
 [0.3.2]: https://github.com/tueda/polybench/compare/0.3.1...0.3.2
 [0.3.1]: https://github.com/tueda/polybench/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/tueda/polybench/compare/0.2.0...0.3.0
