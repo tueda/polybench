@@ -90,7 +90,7 @@ jobs:
           java-version: 11
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Cache for Cargo
         uses: actions/cache@v4
@@ -172,7 +172,7 @@ jobs:
           java-version: 11
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Cache for Cargo
         uses: actions/cache@v4
@@ -258,7 +258,7 @@ jobs:
           java-version: ${{ matrix.java-version }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Build
         run: ./run.sh --build-only --color always --debug --rings
