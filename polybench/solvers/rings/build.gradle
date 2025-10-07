@@ -2,7 +2,7 @@ plugins {
   id 'application'
   id 'com.diffplug.spotless' version '7.2.1'
   id 'com.github.ben-manes.versions' version '0.53.0'
-  id 'ru.vyarus.quality' version '5.0.0'
+  id 'ru.vyarus.quality' version '6.0.1'
 }
 
 def versions = [
