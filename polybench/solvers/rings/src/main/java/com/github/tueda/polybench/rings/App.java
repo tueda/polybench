@@ -61,9 +61,13 @@ public class App {
         MultivariateFactorization.Factor(p);
     long t2 = System.nanoTime();
     StringBuilder result = new StringBuilder();
-    result.append((t2 - t1) / 1.0e9 + "," + factors.unit);
+    result.append((t2 - t1) / 1.0e9).append(',').append(factors.unit);
     for (int i = 0; i < factors.size(); i++) {
-      result.append(",(" + factors.get(i).toString(variables) + ")^" + factors.getExponent(i));
+      result
+          .append(",(")
+          .append(factors.get(i).toString(variables))
+          .append(")^")
+          .append(factors.getExponent(i));
     }
     return result.toString();
   }
