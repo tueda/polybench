@@ -6,6 +6,9 @@ on:
   schedule:
     - cron: 0 0 1 * * # monthly
 
+env:
+  PIP_ONLY_BINARY: ':all:'
+
 jobs:
   bench:
     runs-on: ubuntu-latest

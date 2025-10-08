@@ -6,6 +6,9 @@ on:
   schedule:
     - cron: 0 0 1 * * # monthly
 
+env:
+  PIP_ONLY_BINARY: ':all:'
+
 jobs:
   test:
     runs-on: ${{ matrix.python-version == 3.7 && 'ubuntu-22.04' || 'ubuntu-latest' }}
@@ -143,6 +146,11 @@ jobs:
     container: python:${{ matrix.python-version }}
     env:
       PIP_CACHE_DIR: /tmp/pip-cache
+      # poetry2pip.py does not handle environment markers. As a result, it
+      # includes atomicwrites as a dependency of pytest 7.0.1 even on
+      # non-Windows platforms. As a simple workaround, we allow installing
+      # unnecessary atomicwrites, which does not offer any prebuilt wheels.
+      PIP_NO_BINARY: atomicwrites
     strategy:
       fail-fast: false
       matrix:
