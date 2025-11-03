@@ -2,7 +2,8 @@
 name = "polybench-symbolica"
 version = "0.1.0"
 authors = ["Takahiro Ueda <t.ueda.od@juntendo.ac.jp>"]
-edition = "2021"
+edition = "2024"
+rust-version = "1.88"
 
 [dependencies]
-symbolica = "0.18.0"
+symbolica = "0.19.2"
