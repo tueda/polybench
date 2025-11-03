@@ -4,9 +4,9 @@ use std::io::{BufRead, BufReader, LineWriter, Write};
 use std::sync::Arc;
 use std::time::Instant;
 use symbolica::domains::integer::Z;
+use symbolica::poly::Variable;
 use symbolica::poly::factor::Factorize;
 use symbolica::poly::polynomial::MultivariatePolynomial;
-use symbolica::poly::Variable;
 use symbolica::{atom::AtomCore, parse, symbol};
 
 fn main() {
