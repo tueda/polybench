@@ -6,7 +6,7 @@ plugins {
 }
 
 def versions = [
-  checkstyle: '10.26.1',
+  checkstyle: '12.1.2',
   rings: '2.5.8',
 ]
 
