@@ -104,7 +104,7 @@ jobs:
         run: ./run.sh --type ${{ matrix.problem-type }} --output-directory output-${{ matrix.problem-type }} --color always --all
 
       - name: Save results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.problem-type }}
           path: output-*/
