@@ -1,10 +1,9 @@
+#include <flint/fmpz_mpoly.h>
+#include <flint/fmpz_mpoly_factor.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
-#include <flint/fmpz_mpoly.h>
-#include <flint/fmpz_mpoly_factor.h>
 
 #include "version.h"
 

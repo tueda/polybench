@@ -2,7 +2,7 @@ default_install_hook_types: [pre-commit, commit-msg]
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
     -   id: check-case-conflict
     -   id: check-merge-conflict
@@ -13,7 +13,7 @@ repos:
     -   id: trailing-whitespace
 
 -   repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v20.1.8
+    rev: v21.1.8
     hooks:
     -   id: clang-format
         types_or: [c++, c, cuda, json, objective-c]
@@ -27,12 +27,12 @@ repos:
         additional_dependencies: [pyyaml==6.0.2]
 
 -   repo: https://github.com/psf/black
-    rev: 25.1.0
+    rev: 26.1.0
     hooks:
     -   id: black
 
 -   repo: https://github.com/timothycrosley/isort
-    rev: 6.0.1
+    rev: 7.0.0
     hooks:
     -   id: isort
 
@@ -50,14 +50,14 @@ repos:
         -   pep8-naming==0.15.1
 
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.17.0
+    rev: v1.19.1
     hooks:
     -   id: mypy
         additional_dependencies:
         -   types-toml==0.10.8.20240310
 
 -   repo: https://github.com/editorconfig-checker/editorconfig-checker.python
-    rev: 3.2.1
+    rev: 3.6.0
     hooks:
     -   id: editorconfig-checker
         args: [-disable-indent-size]

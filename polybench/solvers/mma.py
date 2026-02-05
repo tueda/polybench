@@ -51,8 +51,7 @@ class MathematicaSolver(Solver):
 
             if problems.problem_type == "gcd":
                 print2('s = OpenWrite["output.csv"];')
-                print2(
-                    """
+                print2("""
                         DoGCD[p_, q_] := Module[{r, t, a},
                             r = Timing[PolynomialGCD[p, q]];
                             t = r[[1]] // ToString;
@@ -60,8 +59,7 @@ class MathematicaSolver(Solver):
                             a = StringReplace[a, " " -> ""];
                             WriteLine[s, t <> "," <> a];
                         ];
-                    """
-                )
+                    """)
 
                 for p in problems:
                     print2(f"p = {p.p};")
@@ -71,8 +69,7 @@ class MathematicaSolver(Solver):
                 print2("Close[s];")
             elif problems.problem_type == "factor":
                 print2('s = OpenWrite["output.csv"];')
-                print2(
-                    """
+                print2("""
                         DoFactor[p_] := Module[{r, t, a, x1, x2},
                             r = Timing[Factor[p]];
                             t = r[[1]] // ToString;
@@ -83,8 +80,7 @@ class MathematicaSolver(Solver):
                             a = StringReplace[a, "}" -> ""];
                             WriteLine[s, t <> "," <> a];
                         ];
-                    """
-                )
+                    """)
 
                 for p in problems:
                     print2(f"p = {p.p};")
