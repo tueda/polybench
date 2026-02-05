@@ -29,13 +29,19 @@ class FormSolver(Solver):
 
         # Try to download the released binary.
 
-        version = "4.3.1"
+        version = "5.0.0"
         if platform.system() == "Linux" and platform.machine() == "x86_64":
             distname = f"form-{version}-x86_64-linux"
-            sha256 = "7af2edb16a2bd1a929ee0ccfd9af7e27b8ab7be3ed0f7bf0f9be04dc792ecd17"
+            sha256 = "94e40a3b9e0c3158dfce08ce252a1c20f338a0199a251cc0c458edf81324cbd6"
+        elif platform.system() == "Linux" and platform.machine() == "arm64":
+            distname = f"form-{version}-arm64-linux"
+            sha256 = "feaca9d8e320850696e0cd8bcae57928cae3ea2da2844bb50e23481126cdbc88"
         elif platform.system() == "Darwin" and platform.machine() == "x86_64":
             distname = f"form-{version}-x86_64-osx"
-            sha256 = "cb68473a1794bc7e18e0b536804c5f67dc6746065904a63336225acb20369972"
+            sha256 = "44ea668705ba233d7991a618eb5e45a22ef9efa8054d2c7204f7a7773991c14a"
+        elif platform.system() == "Darwin" and platform.machine() == "arm64":
+            distname = f"form-{version}-arm64-osx"
+            sha256 = "2409437156e97c4f2afd2bc201d497cbbadbdf11df057099ae72ba724e19211f"
         else:
             return None
 
