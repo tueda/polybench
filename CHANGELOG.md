@@ -1,6 +1,18 @@
 # Changelog
 
 
+<a name="0.3.5"></a>
+## [0.3.5] (2026-02-05)
+
+### Changed
+
+- Upgrade FORM to 5.0.0.
+  ([51ce475](https://github.com/tueda/polybench/commit/51ce475eaed700ef06f4b2cc77bb3fb50b6f614f))
+
+- Upgrade Symbolica to 1.3.0.
+  ([607b238](https://github.com/tueda/polybench/commit/607b238e23b9a5fdf2c3e95fdd438c2930b49fcc))
+
+
 <a name="0.3.4"></a>
 ## [0.3.4] (2025-10-07)
 
@@ -120,6 +132,7 @@
 - First public version.
 
 
+[0.3.5]: https://github.com/tueda/polybench/compare/0.3.4...0.3.5
 [0.3.4]: https://github.com/tueda/polybench/compare/0.3.3...0.3.4
 [0.3.3]: https://github.com/tueda/polybench/compare/0.3.2...0.3.3
 [0.3.2]: https://github.com/tueda/polybench/compare/0.3.1...0.3.2
