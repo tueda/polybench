@@ -1,6 +1,15 @@
 # Changelog
 
 
+<a name="0.3.6"></a>
+## [0.3.6] (2026-02-09)
+
+### Changed
+
+- Upgrade FLINT to 3.4.0.
+  ([3dc03ba](https://github.com/tueda/polybench/commit/3dc03bac031c6a530728f31b9f68003e4ce98e65))
+
+
 <a name="0.3.5"></a>
 ## [0.3.5] (2026-02-05)
 
@@ -132,6 +141,7 @@
 - First public version.
 
 
+[0.3.6]: https://github.com/tueda/polybench/compare/0.3.5...0.3.6
 [0.3.5]: https://github.com/tueda/polybench/compare/0.3.4...0.3.5
 [0.3.4]: https://github.com/tueda/polybench/compare/0.3.3...0.3.4
 [0.3.3]: https://github.com/tueda/polybench/compare/0.3.2...0.3.3
