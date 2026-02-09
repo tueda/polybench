@@ -1,0 +1,11 @@
+{
+  "name": "flint",
+  "version-semver": "3.4.0",
+  "description": "Fast Library for Number Theory",
+  "homepage": "https://www.flintlib.org/",
+  "supports": "!uwp",
+  "dependencies": [
+    "gmp",
+    "mpfr"
+  ]
+}

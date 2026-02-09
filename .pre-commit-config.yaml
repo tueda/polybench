@@ -22,8 +22,10 @@ repos:
     rev: v0.6.13
     hooks:
     -   id: cmake-format
+        exclude: (^|/)portfile\.cmake$
         additional_dependencies: [pyyaml==6.0.2]
     -   id: cmake-lint
+        exclude: (^|/)portfile\.cmake$
         additional_dependencies: [pyyaml==6.0.2]
 
 -   repo: https://github.com/psf/black

@@ -1,3 +1,4 @@
+#include <flint/fmpz.h>
 #include <flint/fmpz_mpoly.h>
 #include <flint/fmpz_mpoly_factor.h>
 #include <stdio.h>
