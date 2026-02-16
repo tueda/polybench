@@ -513,9 +513,9 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "symbolica"
-version = "1.3.0"
+version = "1.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f294ad84842e2c057ee4aed428dfd9035b95159dc2f928743a3d0516dadc59f4"
+checksum = "2605bdb9ebe913411c68730fd7397e32220981802ec94a52db4a998956848794"
 dependencies = [
  "ahash",
  "append-only-vec",
