@@ -23,6 +23,9 @@ class FlintSolver(Solver):
         if problems.problem_type not in ("gcd", "factor"):
             return None
 
+        # Remove stale overlay port files.
+        self.remove_resources(["ports", "vcpkg-configuration.json"])
+
         # CMake build.
 
         self.copy_resources()

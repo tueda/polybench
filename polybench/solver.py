@@ -304,6 +304,23 @@ class Solver:
                     dest_dir.mkdir(parents=True, exist_ok=True)
                     shutil.copy2(p, q)
 
+    def remove_resources(
+        self, names: Union[str, Sequence[str]], dest_dir: Optional[Path] = None
+    ) -> None:
+        """Remove resource files existing in the given directory."""
+        if isinstance(names, str):
+            names = (names,)
+        if dest_dir is None:
+            dest_dir = Path(".")
+        for name in names:
+            p = dest_dir / name
+            if p.exists():
+                self.logger.debug(f"remove {p.resolve()}")
+                if p.is_dir():
+                    shutil.rmtree(p)
+                else:
+                    p.unlink()
+
     @property
     def cmake_command(self) -> Sequence[str]:
         """Return the CMake command."""
