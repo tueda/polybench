@@ -112,7 +112,7 @@ jobs:
       - name: Install dependencies
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: singular-ui
+          packages: autoconf-archive singular-ui
 
       # NOTE: for testing purposes, we don't cache the entire contents of venv;
       # cf. bench.yml.

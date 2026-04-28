@@ -79,7 +79,7 @@ jobs:
       - name: Install dependencies
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: singular-ui
+          packages: autoconf-archive singular-ui
 
       - name: Cache for venv
         uses: actions/cache@v5
