@@ -127,7 +127,7 @@ jobs:
           restore-keys: ${{ runner.os }}-build-
 
       - name: Build
-        run: ./run.sh --build-only --color always --debug --all
+        run: ./run.sh --build-only --fail-on-setup-failure --color always --debug --all --no-fermat --no-mathematica
 
       - name: Test run (nontrivial-gcd)
         run: ./run.sh --type nontrivial-gcd --max-nterms 5 --color always --all
@@ -211,7 +211,7 @@ jobs:
           restore-keys: python:${{ matrix.python-version }}-build-
 
       - name: Build
-        run: ./run.sh --build-only --color always --debug --all
+        run: ./run.sh --build-only --fail-on-setup-failure --color always --debug --all --no-fermat --no-mathematica
 
       - name: Test run (nontrivial-gcd)
         run: ./run.sh --type nontrivial-gcd --max-nterms 5 --color always --all
@@ -269,7 +269,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
 
       - name: Build
-        run: ./run.sh --build-only --color always --debug --rings
+        run: ./run.sh --build-only --fail-on-setup-failure --color always --debug --rings
 
       - name: Test run (nontrivial-gcd)
         run: ./run.sh --type nontrivial-gcd --max-nterms 5 --color always --rings
