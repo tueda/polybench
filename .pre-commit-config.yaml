@@ -29,7 +29,7 @@ repos:
         additional_dependencies: [pyyaml==6.0.2]
 
 -   repo: https://github.com/psf/black
-    rev: 26.1.0
+    rev: 26.3.1
     hooks:
     -   id: black
 
