@@ -199,7 +199,7 @@ jobs:
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y -q cmake singular-ui zip
+          apt-get install -y -q singular-ui
 
       - name: Cache for build
         uses: actions/cache@v5
@@ -211,7 +211,9 @@ jobs:
           restore-keys: python:${{ matrix.python-version }}-build-
 
       - name: Build
-        run: ./run.sh --build-only --fail-on-setup-failure --color always --debug --all --no-fermat --no-mathematica
+        # Disable FLINT because it depends on GMP, which has a known issue with GCC 10 in vcpkg.
+        # See: https://github.com/tueda/polybench/issues/92
+        run: ./run.sh --build-only --fail-on-setup-failure --color always --debug --all --no-fermat --no-mathematica --no-flint
 
       - name: Test run (nontrivial-gcd)
         run: ./run.sh --type nontrivial-gcd --max-nterms 5 --color always --all
