@@ -455,10 +455,44 @@ def main(
         action="store_true",
         help="enable the debug mode",
     )
+
+    class SolverSelectionAction(argparse.Action):
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            kwargs["nargs"] = 0
+            super().__init__(*args, **kwargs)
+
+        def __call__(
+            self,
+            parser: argparse.ArgumentParser,
+            namespace: argparse.Namespace,
+            values: Any,
+            option_string: Optional[str] = None,
+        ) -> None:
+            if option_string is None:
+                raise AssertionError()
+            solvers: Optional[list[str]] = getattr(namespace, self.dest, None)
+            if solvers is None:
+                solvers = []
+                setattr(namespace, self.dest, solvers)
+            option_string = option_string[2:]
+            if option_string == "all":
+                for c in Solver.get_solver_classes():
+                    s = c._name.lower()
+                    if s not in solvers:
+                        solvers.append(s)
+            elif option_string.startswith("no-"):
+                option_string = option_string[3:]
+                if option_string in solvers:
+                    solvers.remove(option_string)
+            else:
+                if option_string not in solvers:
+                    solvers.append(option_string)
+
     parser.add_argument(
         "--all",
-        action="store_true",
+        action=SolverSelectionAction,
         help="run all solvers",
+        dest="solvers",
     )
     for c in Solver.get_solver_classes():
         name = c._name
@@ -468,9 +502,9 @@ def main(
             extra_info = ""
         parser.add_argument(
             f"--{name.lower()}",
-            action="append_const",
-            const=f"{name}",
-            help=f"run {name} solver{extra_info}",
+            f"--no-{name.lower()}",
+            action=SolverSelectionAction,
+            help=f"run/skip {name} solver{extra_info}",
             dest="solvers",
         )
 
@@ -545,7 +579,7 @@ def main(
         unsupported_suffixes = [s for s in plot_suffixes if s not in supported_suffixes]
         raise ValueError(f"unsupported file format: {', '.join(unsupported_suffixes)}")
 
-    if not opts.solvers and not opts.all:
+    if not opts.solvers:
         raise ValueError(
             "no solvers specified. You need to specify at least one solver to be run. "
             "You can use --all option to run all solvers available"
@@ -629,18 +663,16 @@ def main(
         timeout=timeout,
     )
 
-    if opts.solvers:
-        unknown_solvers = [
-            s for s in opts.solvers if all(s.lower() != t.name.lower() for t in solvers)
-        ]
+    unknown_solvers = [
+        s for s in opts.solvers if all(s.lower() != t.name.lower() for t in solvers)
+    ]
 
-        if unknown_solvers:
-            raise ValueError(f"unknown solvers specified: {unknown_solvers}")
+    if unknown_solvers:
+        raise ValueError(f"unknown solvers specified: {unknown_solvers}")
 
-    if not opts.all:
-        solvers = [
-            s for s in solvers if any(s.name.lower() == t.lower() for t in opts.solvers)
-        ]
+    solvers = [
+        s for s in solvers if any(s.name.lower() == t.lower() for t in opts.solvers)
+    ]
 
     # Title for plots.
 
