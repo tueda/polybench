@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Optional, Sequence
 
 from ..prob import ProblemSet
-from ..solver import Result, Solver
+from ..solver import Result, Solver, SolverSetupError
 
 
 class ReformSolver(Solver):
@@ -22,7 +22,7 @@ class ReformSolver(Solver):
 
         if not self.run([*self.cargo_command, "build", "--release"]):
             self.logger.warning("Note: reFORM requires rust>=1.36")
-            return None
+            raise SolverSetupError("build failed")
 
         # TODO: Extract the version from Cargo.toml.
         version = "0.1.0-fix-serialize"

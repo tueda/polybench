@@ -6,7 +6,7 @@ from typing import Optional, Sequence
 import toml
 
 from ..prob import ProblemSet
-from ..solver import Result, Solver
+from ..solver import Result, Solver, SolverSetupError
 
 
 class SymbolicaSolver(Solver):
@@ -24,7 +24,7 @@ class SymbolicaSolver(Solver):
 
         if not self.run([*self.cargo_command, "build", "--release"]):
             self.logger.warning("Note: Symbolica requires rust>=1.73")
-            return None
+            raise SolverSetupError("build failed")
 
         version = (
             toml.load("Cargo.toml").get("dependencies", {}).get("symbolica")

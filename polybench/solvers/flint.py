@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Optional, Sequence
 
 from ..prob import ProblemSet
-from ..solver import Result, Solver
+from ..solver import Result, Solver, SolverSetupError
 
 
 class FlintSolver(Solver):
@@ -40,17 +40,17 @@ class FlintSolver(Solver):
                 "-DCMAKE_BUILD_TYPE=Release",
             ]
         ):
-            return None
+            raise SolverSetupError("configure step failed")
 
         if not self.run([*self.cmake_command, "--build", "build"]):
-            return None
+            raise SolverSetupError("build failed")
 
         # Check the FLINT version.
         output = self.get_output([self._find_executable(), "-v"])
         if output:
             return output[0]
 
-        raise RuntimeError("failed to get FLINT version")
+        raise SolverSetupError("failed to get version")
 
     def _solve(self, problems: ProblemSet) -> Optional[Sequence[Result]]:
         variables = ",".join(problems.variables)

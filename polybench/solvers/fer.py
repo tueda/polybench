@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Dict, Optional, Sequence
 
 from ..prob import ProblemSet
-from ..solver import Result, Solver
+from ..solver import Result, Solver, SolverSetupError
 
 
 class FermatSolver(Solver):
@@ -35,19 +35,17 @@ class FermatSolver(Solver):
         fermat = self._find_fermat()
 
         if not fermat:
-            return None
+            raise SolverSetupError("executable not found")
 
         output = self.get_output(fermat, input="&q")
 
-        if not output:
-            return None
+        if output:
+            for line in output:
+                m = re.match(r"^(.*version.*)\(c\)", line)
+                if m:
+                    return m.group(1)
 
-        for line in output:
-            m = re.match(r"^(.*version.*)\(c\)", line)
-            if m:
-                return m.group(1)
-
-        return None
+        raise SolverSetupError("failed to get version")
 
     def _solve(self, problems: ProblemSet) -> Optional[Sequence[Result]]:
         # Write the input file.

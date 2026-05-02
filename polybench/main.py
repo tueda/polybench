@@ -27,7 +27,7 @@ from .prob import (
     get_exponents_distribution_args,
     get_problem_type_input_args,
 )
-from .solver import Result, Solver
+from .solver import Result, Solver, SolverSetupError
 from .util import bytes2human
 
 Logger = logging.Logger
@@ -94,18 +94,32 @@ def config_log(logger: Logger, **kwargs: Any) -> None:
 
 
 def prepare_solvers(
-    solvers: Sequence[Solver], problems: ProblemSet
+    solvers: Sequence[Solver],
+    problems: ProblemSet,
+    fail_on_setup_failure: bool,
 ) -> Sequence[Solver]:
     """Make the solvers prepare for the problems and return available solvers."""
     available_solvers = []
 
+    failed = False
+
     for s in solvers:
-        v = s.prepare(problems)
-        if v:
-            available_solvers.append(s)
-            s.logger.info(v)
-        else:
-            s.logger.warning("not available")
+        try:
+            v = s.prepare(problems)
+            if v:
+                available_solvers.append(s)
+                s.logger.info(v)
+            else:
+                s.logger.warning("not available")
+        except SolverSetupError as e:
+            failed = True
+            if fail_on_setup_failure:
+                s.logger.error(e)
+            else:
+                s.logger.warning(e)
+
+    if fail_on_setup_failure and failed:
+        sys.exit(1)
 
     return tuple(available_solvers)
 
@@ -427,6 +441,11 @@ def main(
         help="build executables but skip actual benchmarks",
     )
     parser.add_argument(
+        "--fail-on-setup-failure",
+        action="store_true",
+        help="exit with an error if any solver setup fails",
+    )
+    parser.add_argument(
         "--keep-temp",
         action="store_true",
         help="don't delete temporary files",
@@ -481,6 +500,7 @@ def main(
     seed = cast(int, opts.seed)
     timeout = cast(int, opts.timeout)
     build_only = cast(bool, opts.build_only)
+    fail_on_setup_failure = cast(bool, opts.fail_on_setup_failure)
     keep_temp = cast(bool, opts.keep_temp)
     debug = cast(bool, opts.debug)
 
@@ -650,11 +670,16 @@ def main(
         seed=seed,
         timeout=timeout,
         build_only=build_only,
+        fail_on_setup_failure=fail_on_setup_failure,
         keep_temp=keep_temp,
         debug=debug,
     )
 
-    solvers = prepare_solvers(solvers, problems)
+    solvers = prepare_solvers(
+        solvers,
+        problems,
+        fail_on_setup_failure,
+    )
 
     if solvers and not build_only:
         run_solvers(

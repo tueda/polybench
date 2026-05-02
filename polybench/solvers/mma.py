@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Optional, Sequence
 
 from ..prob import ProblemSet
-from ..solver import Result, Solver
+from ..solver import Result, Solver, SolverSetupError
 
 
 class MathematicaSolver(Solver):
@@ -30,14 +30,14 @@ class MathematicaSolver(Solver):
         wolframscript = self._find_wolframscript()
 
         if not wolframscript:
-            return None
+            raise SolverSetupError("executable not found")
 
         version = self.get_output([wolframscript, "-code", "$Version"])
 
-        if not version:
-            return None
+        if version:
+            return version[0]
 
-        return version[0]
+        raise SolverSetupError("failed to get version")
 
     def _solve(self, problems: ProblemSet) -> Optional[Sequence[Result]]:
         # Write a Mathematica program.

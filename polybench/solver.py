@@ -27,6 +27,10 @@ class Result(NamedTuple):
     answer: Sequence[Polynomial]
 
 
+class SolverSetupError(RuntimeError):
+    """Error raised when solver setup fails."""
+
+
 class Solver:
     """Abstract solver."""
 
@@ -39,9 +43,12 @@ class Solver:
 
     def _prepare(self, problems: ProblemSet) -> Optional[str]:
         # Prepare this solver for the given problems and return the version string
-        # from the underlying executable/library. Typically, the solver checks the
-        # availability of executables, or download/build executables in `build_dir`,
-        # which is the current working directory when this method is called.
+        # from the underlying executable or library. Typically, the solver checks
+        # whether the required executables are available and, if necessary, downloads
+        # or builds them in `build_dir`, which is the current working directory
+        # when this method is called.
+        # If the solver does not support the given problems, return None.
+        # This method may raise `SolverSetupError` if setup fails.
         raise NotImplementedError
 
     def _solve(self, problems: ProblemSet) -> Optional[Sequence[Result]]:

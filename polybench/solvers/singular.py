@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Optional, Sequence
 
 from ..prob import ProblemSet
-from ..solver import Result, Solver
+from ..solver import Result, Solver, SolverSetupError
 
 
 class SingularSolver(Solver):
@@ -30,14 +30,14 @@ class SingularSolver(Solver):
         singular = self._find_singular()
 
         if not singular:
-            return None
+            raise SolverSetupError("executable not found")
 
         output = self.get_output([singular, "-v"], input="")
 
-        if not output:
-            return None
+        if output:
+            return output[0]
 
-        return output[0]
+        raise SolverSetupError("failed to get version")
 
     def _solve(self, problems: ProblemSet) -> Optional[Sequence[Result]]:
         # Write the Singular program file.

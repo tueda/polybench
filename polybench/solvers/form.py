@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Optional, Sequence, cast
 
 from ..prob import ProblemSet
-from ..solver import Result, Solver
+from ..solver import Result, Solver, SolverSetupError
 
 
 class FormSolver(Solver):
@@ -74,18 +74,16 @@ class FormSolver(Solver):
         form = self._find_form()
 
         if not form:
-            return None
+            raise SolverSetupError("executable not found")
 
         output = self.get_output([form, "-v"])
 
-        if not output:
-            return None
+        if output:
+            for s in output:
+                if "FORM" in s:
+                    return s
 
-        for s in output:
-            if "FORM" in s:
-                return s
-
-        return None
+        raise SolverSetupError("failed to get version")
 
     def _solve(self, problems: ProblemSet) -> Optional[Sequence[Result]]:
         # Write a FORM program.

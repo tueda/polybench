@@ -4,7 +4,7 @@ import re
 from typing import Optional, Sequence
 
 from ..prob import ProblemSet
-from ..solver import Result, Solver
+from ..solver import Result, Solver, SolverSetupError
 
 
 class RingsSolver(Solver):
@@ -22,7 +22,7 @@ class RingsSolver(Solver):
 
         if not self.run([*self.gradlew_command, "classes"]):
             self.logger.warning("Note: Rings requires JDK>=8")
-            return None
+            raise SolverSetupError("build failed")
 
         # Look for "rings: 'x.y.z'" in build.gradle.
 
@@ -35,7 +35,7 @@ class RingsSolver(Solver):
                 jvm_version = self.jvm_version
                 return version + (f", {jvm_version}" if jvm_version else "")
 
-        raise RuntimeError("failed to get Rings version")
+        raise SolverSetupError("failed to get version")
 
     def _solve(self, problems: ProblemSet) -> Optional[Sequence[Result]]:
         variables = ",".join(problems.variables)
