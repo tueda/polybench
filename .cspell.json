@@ -1,0 +1,16 @@
+{
+  "allowCompoundWords": true,
+  "dictionaries": [
+    "python",
+    "rust"
+  ],
+  "language": "en",
+  "version": "0.2",
+  "words": [
+    "-DCMAKE_BUILD_TYPE",
+    "Mathematica",
+    "Symbolica",
+    "Takahiro",
+    "Ueda"
+  ]
+}

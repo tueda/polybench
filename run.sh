@@ -28,11 +28,10 @@ else
     $python3 -m venv "$venv_path"
     $venv_python3 -m pip install --upgrade pip
     # Check Python version.
-    if $venv_python3 <<END
+    if $venv_python3 <<END; then
 import sys
 sys.exit(0 if sys.version_info >= (3, 7) else 1)
 END
-    then
       # Use Poetry for Python >= 3.7.
       $venv_python3 -m pip install poetry
       poetry_version=$($venv_python3 -m pip show poetry 2>/dev/null | awk '/Version:/ {print $2}')

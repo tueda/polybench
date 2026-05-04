@@ -7,7 +7,7 @@ Standard: Cpp11
 DerivePointerAlignment: false
 IncludeBlocks: Regroup
 IncludeCategories:
-  - Regex:           '^<[^/]+>'
+  - Regex:           '^<[^/]+>$'
     Priority:        1
   - Regex:           '^<.+>'
     Priority:        2

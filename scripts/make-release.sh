@@ -86,8 +86,8 @@ _errexit() {
   # Print out the stack trace described by $FUNCNAME
   if [ ${#FUNCNAME[@]} -gt 2 ]; then
     echo 'Traceback:' >&2
-    for ((i=1;i<${#FUNCNAME[@]}-1;i++)); do
-      echo "  [$i]: at ${BASH_SOURCE[$i+1]}:${BASH_LINENO[$i]} in function ${FUNCNAME[$i]}" >&2
+    for ((i = 1; i < ${#FUNCNAME[@]} - 1; i++)); do
+      echo "  [$i]: at ${BASH_SOURCE[$i + 1]}:${BASH_LINENO[$i]} in function ${FUNCNAME[$i]}" >&2
     done
   fi
   echo "Exiting with status ${code}" >&2
@@ -183,15 +183,15 @@ fi
 while :; do
   read -r -p 'ok? (y/N): ' yn
   case "$yn" in
-    [yY]*)
-      break
-      ;;
-    [nN]*)
-      echo 'Aborted' >&2
-      exit 1
-      ;;
-    *)
-      ;;
+  [yY]*)
+    break
+    ;;
+  [nN]*)
+    echo 'Aborted' >&2
+    exit 1
+    ;;
+  *)
+    ;;
   esac
 done
 
