@@ -22,42 +22,46 @@ pre_version_message() {
   echo 'Please make sure that CHANGELOG.md is up-to-date.'
   echo 'You can use the output of the following command:'
   echo
-  echo "  git-chglog --next-tag $v$2"
+  echo "  git cliff --unreleased --tag $v$2"
   echo
 }
 
 # get_current_version: prints the current version.
 get_current_version() {
-  poetry version -s
+  poetry version -s 2>/dev/null
 }
 
 # get_next_version <current_version_number>: prints the next version.
 get_next_version() {
-  local next_version
-  poetry version patch >/dev/null
-  next_version=$(poetry version -s)
-  git restore pyproject.toml
-  echo "$next_version"
+  if command -v git-cliff >/dev/null 2>&1; then
+    git-cliff --bumped-version 2>/dev/null
+  else
+    local next_version
+    poetry version patch >/dev/null 2>/dev/null
+    next_version=$(poetry version -s 2>/dev/null)
+    git restore pyproject.toml
+    echo "$next_version"
+  fi
 }
 
 # get_next_dev_version <current_version_number> <next_version_number>: prints the next dev-version.
 get_next_dev_version() {
   local next_dev_version
-  poetry version "$2" >/dev/null
-  poetry version prepatch >/dev/null
-  next_dev_version=$(poetry version -s)
+  poetry version "$2" >/dev/null 2>&1
+  poetry version prepatch >/dev/null 2>&1
+  next_dev_version=$(poetry version -s 2>/dev/null)
   git restore pyproject.toml
   echo "$next_dev_version"
 }
 
 # version_bump <version_number>: a hook function to bump the version for documents.
 version_bump() {
-  dev_version_bump $1
+  dev_version_bump "$1"
 }
 
 # dev_version_bump <dev_version_number>: a hook function to bump the version for code.
 dev_version_bump() {
-  poetry version "$1"
+  poetry version "$1" >/dev/null 2>&1
 }
 
 # release_commit_message <version_number>: generates the commit message for a release version.
@@ -67,7 +71,7 @@ release_commit_message() {
 
 # dev_commit_message <version_number>: generates the commit message for a development version.
 dev_commit_message() {
-  echo "chore: bump version to $1"
+  echo "chore(release): start $1 development"
 }
 
 ### Project-independent logic ###

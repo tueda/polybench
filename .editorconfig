@@ -34,7 +34,7 @@ end_of_line = crlf
 indent_size = 2
 indent_style = space
 
-[{.pre-commit-config.yaml,pyproject.toml,setup.cfg}]
+[{.cliff.toml,.pre-commit-config.yaml,pyproject.toml,setup.cfg}]
 indent_size = 4
 indent_style = space
 
