@@ -1,7 +1,27 @@
 # Changelog
 
 
+<a name="0.4.0"></a>
+
+## [0.4.0] (2026-05-05)
+
+### Added
+
+- Add `--fail-on-setup-failure` command-line option to exit with an error on solver setup failures ([12965d9](https://github.com/tueda/polybench/commit/12965d94a85c037dea46efa3b57716c873b7702c))
+- Add `--no-<solver>` command-line options to skip solvers ([bc2dd5b](https://github.com/tueda/polybench/commit/bc2dd5b2de99c88c606ccf596987986017007d45))
+
+### Changed
+
+- Upgrade Symbolica to 1.5.1 ([34889fe](https://github.com/tueda/polybench/commit/34889fe511391aa6f75217ebf44e8a5aaec5706e))
+- Upgrade FLINT to 3.5.0 ([e7b8a46](https://github.com/tueda/polybench/commit/e7b8a46eaa434a0e3faea818d3beb8bbf11b6abe))
+
+### Fixed
+
+- **rings:** Fix compatibility with Java 8, 11, 17 and 21 ([ee15115](https://github.com/tueda/polybench/commit/ee1511541e79164abdc56e3ecca74744ec408e7c))
+
+
 <a name="0.3.6"></a>
+
 ## [0.3.6] (2026-02-09)
 
 ### Changed
@@ -11,6 +31,7 @@
 
 
 <a name="0.3.5"></a>
+
 ## [0.3.5] (2026-02-05)
 
 ### Changed
@@ -23,6 +44,7 @@
 
 
 <a name="0.3.4"></a>
+
 ## [0.3.4] (2025-10-07)
 
 ### Changed
@@ -32,6 +54,7 @@
 
 
 <a name="0.3.3"></a>
+
 ## [0.3.3] (2025-07-31)
 
 ### Changed
@@ -41,6 +64,7 @@
 
 
 <a name="0.3.2"></a>
+
 ## [0.3.2] (2025-06-06)
 
 ### Changed
@@ -55,6 +79,7 @@
 
 
 <a name="0.3.1"></a>
+
 ## [0.3.1] (2025-02-18)
 
 ### Changed
@@ -72,6 +97,7 @@
 
 
 <a name="0.3.0"></a>
+
 ## [0.3.0] (2024-09-28)
 
 ### Added
@@ -101,6 +127,7 @@
 
 
 <a name="0.2.0"></a>
+
 ## [0.2.0] (2021-12-27)
 
 ### Added
@@ -136,11 +163,13 @@
 
 
 <a name="0.1.0"></a>
+
 ## 0.1.0 (2020-12-31)
 
 - First public version.
 
 
+[0.4.0]: https://github.com/tueda/polybench/compare/0.3.6...0.4.0
 [0.3.6]: https://github.com/tueda/polybench/compare/0.3.5...0.3.6
 [0.3.5]: https://github.com/tueda/polybench/compare/0.3.4...0.3.5
 [0.3.4]: https://github.com/tueda/polybench/compare/0.3.3...0.3.4
