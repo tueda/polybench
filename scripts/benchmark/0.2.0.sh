@@ -10,7 +10,10 @@ fi
 output_dir=$1
 root_dir=$(cd -- "$(dirname -- "$0")" &>/dev/null && cd ../.. &>/dev/null && pwd)
 
-cd "$root_dir" || { echo "$root_dir not found" >&2; exit 1; }
+cd "$root_dir" || {
+  echo "$root_dir not found" >&2
+  exit 1
+}
 
 if [ -d "../polybench-result" ]; then
   result_dir=$(cd "$root_dir" &>/dev/null && cd ../polybench-result &>/dev/null && pwd)

@@ -2,6 +2,7 @@
 set -eu
 set -o pipefail
 
+# shellcheck source=scripts/benchmark/0.2.0.sh
 . "$(cd -- "$(dirname -- "$0")" && pwd)/0.2.0.sh"
 
 run030() {

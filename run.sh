@@ -28,17 +28,16 @@ else
     $python3 -m venv "$venv_path"
     $venv_python3 -m pip install --upgrade pip
     # Check Python version.
-    if $venv_python3 <<END
+    if $venv_python3 <<END; then
 import sys
 sys.exit(0 if sys.version_info >= (3, 7) else 1)
 END
-    then
       # Use Poetry for Python >= 3.7.
       $venv_python3 -m pip install poetry
       poetry_version=$($venv_python3 -m pip show poetry 2>/dev/null | awk '/Version:/ {print $2}')
       poetry_major_version=$(echo "$poetry_version" | cut -d. -f1)
       (
-        cd $root_path
+        cd "$root_path"
         $venv_python3 -m poetry config --local virtualenvs.in-project true
         if [[ "$poetry_major_version" -ge 2 ]]; then
           $venv_python3 -m poetry install --only main --no-interaction --no-root
@@ -56,10 +55,10 @@ END
       # a requirements.txt file, and then pass it to pip.
       $venv_python3 -m pip install toml packaging
       (
-        cd $root_path
-        $venv_python3 $root_path/scripts/poetry2pip.py
+        cd "$root_path"
+        $venv_python3 "$root_path/scripts/poetry2pip.py"
       )
-      $venv_python3 -m pip install -r $root_path/requirements.txt
+      $venv_python3 -m pip install -r "$root_path/requirements.txt"
     fi
   fi
 fi

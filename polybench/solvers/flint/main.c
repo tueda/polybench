@@ -1,6 +1,7 @@
 #include <flint/fmpz.h>
 #include <flint/fmpz_mpoly.h>
 #include <flint/fmpz_mpoly_factor.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -29,24 +30,24 @@ void* realloc2(void* ptr, size_t new_size) {
   return p;
 }
 
-long long get_nanoseconds(void) {
+int64_t get_nanoseconds(void) {
   struct timespec ts;
   timespec_get(&ts, TIME_UTC);
-  return ts.tv_sec * 1000000000LL + ts.tv_nsec;
+  return (int64_t)ts.tv_sec * INT64_C(1000000000) + (int64_t)ts.tv_nsec;
 }
 
 int strsplit(const char* str, const char* delim, char** out_buf,
              char*** out_array) {
   char* buf = (char*)malloc2(sizeof(char) * (strlen(str) + 1));
 
-  strcpy(buf, str);
+  strcpy(buf, str);  // NOLINT(runtime/printf)
 
   int n = 0;
-  char* p = strtok(buf, delim);
+  char* p = strtok(buf, delim);  // NOLINT(runtime/threadsafe_fn)
   for (;;) {
     if (p) {
       n++;
-      p = strtok(NULL, delim);
+      p = strtok(NULL, delim);  // NOLINT(runtime/threadsafe_fn)
     } else {
       break;
     }
@@ -55,13 +56,13 @@ int strsplit(const char* str, const char* delim, char** out_buf,
   char** array = (char**)malloc2(sizeof(char*) * (n > 0 ? n : 1));
 
   int i = 0;
-  strcpy(buf, str);
-  p = strtok(buf, delim);
+  strcpy(buf, str);        // NOLINT(runtime/printf)
+  p = strtok(buf, delim);  // NOLINT(runtime/threadsafe_fn)
   for (;;) {
     if (p) {
       array[i] = p;
       i++;
-      p = strtok(NULL, delim);
+      p = strtok(NULL, delim);  // NOLINT(runtime/threadsafe_fn)
     } else {
       break;
     }
@@ -123,9 +124,9 @@ void do_gcd(int n_variables, const char** variables, int n_polys,
     error("failed to parse a polynomial");
   }
 
-  long long t1 = get_nanoseconds();
+  int64_t t1 = get_nanoseconds();
   int result = fmpz_mpoly_gcd(g, p1, p2, ctx);
-  long long t2 = get_nanoseconds();
+  int64_t t2 = get_nanoseconds();
 
   fprintf(out, "%g,", (double)(t2 - t1) * 1.0e-9);
   if (result) {
@@ -161,9 +162,9 @@ void do_factor(int n_variables, const char** variables, int n_polys,
     error("failed to parse a polynomial");
   }
 
-  long long t1 = get_nanoseconds();
+  int64_t t1 = get_nanoseconds();
   int result = fmpz_mpoly_factor(f, p, ctx);
-  long long t2 = get_nanoseconds();
+  int64_t t2 = get_nanoseconds();
 
   fprintf(out, "%g", (double)(t2 - t1) * 1.0e-9);
   if (result) {
