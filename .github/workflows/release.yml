@@ -9,8 +9,110 @@ on:
       - .pre-commit-config.yaml
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
-  release:
+  check-tag:
+    runs-on: ubuntu-slim
+    outputs:
+      release: ${{ steps.check-tag.outputs.release }}
+      version: ${{ steps.check-tag.outputs.version }}
+      pre-release: ${{ steps.check-tag.outputs.pre-release }}
+      post-release: ${{ steps.check-tag.outputs.post-release }}
+    steps:
+      - name: Check Tag  # MAJOR.MINOR.PATCH with optional PEP 440 suffixes
+        id: check-tag
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          ref_type=$REF_TYPE
+          tag=$TAG
+
+          if [[ "$ref_type" == 'tag' \
+              && "$tag" =~ ^[0-9]+\.[0-9]+\.[0-9]+(a[0-9]+|b[0-9]+|rc[0-9]+)?(\.post[0-9]+)?(\.dev[0-9]+)?$ ]]; then
+            echo 'release=true' >>"$GITHUB_OUTPUT"
+            echo "version=$tag" >>"$GITHUB_OUTPUT"
+          else
+            echo 'release=false' >>"$GITHUB_OUTPUT"
+          fi
+
+          if [[ "$ref_type" == 'tag' && "$tag" =~ (a|b|rc)[0-9]+|\.dev[0-9]+ ]]; then
+            echo 'pre-release=true' >>"$GITHUB_OUTPUT"
+          else
+            echo 'pre-release=false' >>"$GITHUB_OUTPUT"
+          fi
+
+          if [[ "$ref_type" == 'tag' && "$tag" =~ \.post[0-9]+ ]]; then
+            echo 'post-release=true' >>"$GITHUB_OUTPUT"
+          else
+            echo 'post-release=false' >>"$GITHUB_OUTPUT"
+          fi
+
+  generate-release-notes:
+    runs-on: ubuntu-slim
+    outputs:
+      version: ${{ steps.release-notes.outputs.version }}
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Install parse-changelog
+        uses: taiki-e/install-action@parse-changelog
+
+      - name: Generate release notes
+        id: release-notes
+        run: |
+          ./scripts/generate-release-notes.sh >release-notes.md
+          version=$(./scripts/generate-release-notes.sh -v)
+          echo "version=$version" >>"$GITHUB_OUTPUT"
+
+      - name: Preview release notes
+        env:
+          NOTES_VERSION: ${{ steps.release-notes.outputs.version }}
+        run: |
+          echo "# $NOTES_VERSION"
+          echo
+          cat release-notes.md
+
+      - name: Upload release notes
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-notes
+          path: release-notes.md
+          if-no-files-found: error
+
+  check-release-notes:
+    needs:
+      - check-tag
+      - generate-release-notes
+    runs-on: ubuntu-slim
+    steps:
+      - name: Verify release notes version matches tag version
+        if: >
+          needs.check-tag.outputs.release == 'true'
+          && needs.check-tag.outputs.post-release != 'true'
+        env:
+          VERSION: ${{ needs.check-tag.outputs.version }}
+          NOTES_VERSION: ${{ needs.generate-release-notes.outputs.version }}
+        run: |
+          version=$VERSION
+          notes_version=$NOTES_VERSION
+
+          if [[ "$version" != "$notes_version" ]]; then
+            echo "error: release notes version does not match tag version" >&2
+            echo "  version in release notes: $notes_version" >&2
+            echo "  tag version:              $version" >&2
+            exit 1
+          fi
+
+  release-pypi:
+    needs:
+      - check-tag
+      - check-release-notes
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -19,22 +121,44 @@ jobs:
       - name: Install poetry
         run: pipx install poetry
 
-      - name: Check Tag  # SemVer + PEP 440
-        id: check-tag
-        run: |
-          if [[ ${{ github.ref }} =~ ^refs\/tags\/[0-9]+\.[0-9]+\.[0-9]+(a[0-9]+|b[0-9]+|rc[0-9]+)?(\.post[0-9]+)?(\.dev[0-9]+)?$ ]]; then
-            echo 'match=true' >>"$GITHUB_OUTPUT"
-          fi
-
       - name: Build package
         run: poetry build
 
       - name: Publish to PyPI
-        if: steps.check-tag.outputs.match == 'true'
+        if: needs.check-tag.outputs.release == 'true'
         env:
           POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
         run: poetry publish --no-interaction
 
       - name: Publish to PyPI (dry-run)
-        if: steps.check-tag.outputs.match != 'true'
+        if: needs.check-tag.outputs.release != 'true'
         run: poetry publish --no-interaction --dry-run
+
+  release-github:
+    needs:
+      - check-tag
+      - check-release-notes
+    if: needs.check-tag.outputs.release == 'true'
+    permissions:
+      contents: write
+    runs-on: ubuntu-slim
+    steps:
+      - name: Download release notes
+        if: needs.check-tag.outputs.post-release != 'true'
+        uses: actions/download-artifact@v8
+        with:
+          name: release-notes
+
+      - name: Create a release
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+          VERSION: ${{ needs.check-tag.outputs.version }}
+          PRE_RELEASE: ${{ needs.check-tag.outputs.pre-release }}
+          POST_RELEASE: ${{ needs.check-tag.outputs.post-release }}
+        run: |
+          args=(--verify-tag --title "$VERSION")
+          [[ "$PRE_RELEASE" == 'true' ]] && args+=(--prerelease)
+          [[ "$POST_RELEASE" != 'true' ]] && args+=(--notes-file release-notes.md)
+          gh release create "$TAG" "${args[@]}"
