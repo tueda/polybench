@@ -18,6 +18,10 @@ find_library(MATH_LIBRARY m)
 add_library(Math::Math INTERFACE IMPORTED)
 target_link_libraries(Math::Math INTERFACE ${MATH_LIBRARY})
 
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+find_package(Threads REQUIRED)
+
 add_executable(polybench-flint main.c)
 target_include_directories(polybench-flint PRIVATE ${CMAKE_BINARY_DIR})
-target_link_libraries(polybench-flint PRIVATE PkgConfig::flint Math::Math)
+target_link_libraries(polybench-flint PRIVATE PkgConfig::flint Math::Math
+                                              Threads::Threads)
