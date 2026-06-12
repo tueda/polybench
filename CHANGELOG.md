@@ -1,6 +1,20 @@
 # Changelog
 
 
+<a name="0.4.1"></a>
+
+## [0.4.1] (2026-06-12)
+
+### Changed
+
+- Upgrade Symbolica to  2.0.0 ([6eaabc0](https://github.com/tueda/polybench/commit/6eaabc09952ebdffb0a2143700fbc21d166c6410))
+
+
+### Fixed
+
+- **flint:** Explicitly link `Threads::Threads` ([e8b098a](https://github.com/tueda/polybench/commit/e8b098a92cbfd46f564c237598796a53f2ea476e))
+
+
 <a name="0.4.0"></a>
 
 ## [0.4.0] (2026-05-05)
@@ -169,6 +183,7 @@
 - First public version.
 
 
+[0.4.1]: https://github.com/tueda/polybench/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/tueda/polybench/compare/0.3.6...0.4.0
 [0.3.6]: https://github.com/tueda/polybench/compare/0.3.5...0.3.6
 [0.3.5]: https://github.com/tueda/polybench/compare/0.3.4...0.3.5
