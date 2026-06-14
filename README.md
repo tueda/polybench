@@ -102,24 +102,24 @@ docker run -it --rm polybench:latest
 Example
 -------
 
-|                |                                                                      |
-| -------------- | -------------------------------------------------------------------- |
-| platform       | Linux-5.15.0-84-generic-x86_64-with-glibc2.29                        |
-| python_version | 3.8.10.final.0 (64 bit)                                              |
-| cpu_brand      | 12th Gen Intel(R) Core(TM) i9-12900                                  |
-| cpu_count      | 16 (logical: 24)                                                     |
-| total_memory   | 62.6GB                                                               |
-| FLINT          | flint 3.4.0, gcc-11 (GNU) 11.4.0                                     |
-| FORM           | FORM 5.0.0 (Jan 27 2026, v5.0.0)                                     |
-| Mathematica    | 14.3.0 for Linux x86 (64-bit) (July 31, 2025)                        |
-| reFORM         | 0.1.0-fix-serialize, rustc 1.93.0 (254b59607 2026-01-19)             |
+|                |                                                                                 |
+| -------------- | ------------------------------------------------------------------------------- |
+| platform       | Linux-5.15.0-84-generic-x86_64-with-glibc2.29                                   |
+| python_version | 3.8.10.final.0 (64 bit)                                                         |
+| cpu_brand      | 12th Gen Intel(R) Core(TM) i9-12900                                             |
+| cpu_count      | 16 (logical: 24)                                                                |
+| total_memory   | 62.6GB                                                                          |
+| FLINT          | flint 3.5.0, gcc-11 (GNU) 11.5.0                                                |
+| FORM           | FORM 5.0.0 (Jan 27 2026, v5.0.0)                                                |
+| Mathematica    | 14.3.0 for Linux x86 (64-bit) (July 31, 2025)                                   |
+| reFORM         | 0.1.0-fix-serialize, rustc 1.96.0 (ac68faa20 2026-05-25)                        |
 | Rings          | 2.5.8, JVM: 11.0.20.1 (Ubuntu 11.0.20.1+1-post-Ubuntu-0ubuntu120.04) |
-| Singular       | Singular for x86_64-Linux version 4.4.1 (44100, 64 bit) Jan 2025     |
-| Symbolica      | 1.3.0, rustc 1.93.0 (254b59607 2026-01-19)                           |
+| Singular       | Singular for x86_64-Linux version 4.4.1 (44100, 64 bit) Jan 2025                |
+| Symbolica      | 2.0.0, rustc 1.96.0 (ac68faa20 2026-05-25)                                      |
 
-![nontrivial-gcd](https://raw.githubusercontent.com/tueda/polybench-result/refs/heads/main/0.3.6/05/0002.figures/summary.png)
+![nontrivial-gcd](https://raw.githubusercontent.com/tueda/polybench-result/refs/heads/main/0.4.1/05/0002.figures/summary.png)
 
-![nontrivial-factor](https://raw.githubusercontent.com/tueda/polybench-result/refs/heads/main/0.3.6/05/0004.figures/summary.png)
+![nontrivial-factor](https://raw.githubusercontent.com/tueda/polybench-result/refs/heads/main/0.4.1/05/0004.figures/summary.png)
 
 Additional benchmark results are available [here](https://github.com/tueda/polybench-result/tree/main).
 
