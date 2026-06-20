@@ -23,7 +23,7 @@ jobs:
         python-version: [3.7, 3.8, 3.9, '3.10', '3.11', '3.12', '3.13']
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install Poetry (Python >= 3.8)
         if: matrix.python-version != 3.7
@@ -59,7 +59,7 @@ jobs:
         python-version: [3.7, 3.8, 3.9, '3.10', '3.11', '3.12', '3.13']
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -162,7 +162,7 @@ jobs:
         python-version: [3.6]
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Cache for pip
         uses: actions/cache@v5
@@ -241,7 +241,7 @@ jobs:
         java-version: [8, 17, 21]
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set up Python
         uses: actions/setup-python@v6
