@@ -29,6 +29,12 @@ jobs:
         if: matrix.python-version != 3.7
         run: pipx install poetry
 
+      # virtualenv >= 21.5 no longer supports creating Python 3.8.
+      - name: Pin virtualenv (Python 3.8)
+        if: matrix.python-version == 3.8
+        run: |
+          pipx runpip poetry install virtualenv==21.4.3
+
       # The latest version of the packaging library, which is used when
       # installing packages, no longer supports Python < 3.8. Here, we freeze
       # the version of the packaging library to 21.3, which works with Python
