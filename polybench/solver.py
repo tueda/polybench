@@ -362,6 +362,8 @@ class Solver:
 
         if output:
             for s in output:
+                if s.find("Launcher JVM:") >= 0:
+                    return "JVM: " + s[13:].strip()
                 if s.find("JVM:") >= 0:
                     return "JVM: " + s[4:].strip()
 
