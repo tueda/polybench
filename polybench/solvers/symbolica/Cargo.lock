@@ -204,18 +204,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5baebc0774151f905a1a2cc41989300b1e6fbb29aff0ceffa1064fdd3088d582"
 
 [[package]]
-name = "fixedbitset"
-version = "0.5.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1d674e81391d1e1ab681a28d99df07927c6d4aa5b027d7da16ba32d1d21ecd99"
-
-[[package]]
-name = "foldhash"
-version = "0.1.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9c4f5dac5e15c24eb999c26181a6ca40b39fe946cbe4c263c7209467bc83af2"
-
-[[package]]
 name = "foldhash"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -256,23 +244,14 @@ dependencies = [
 
 [[package]]
 name = "graphica"
-version = "2.0.0"
+version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "81d07452dc5bcb2484f2cfab9fb746d6a13346e1c94d7d80aa3f4cd0df6b5ab8"
+checksum = "10b1f5801ef27f815fbfb0f2057a6dfebaf0001304fd8c904e509f8f57b81f73"
 dependencies = [
  "ahash",
  "dyn-clone",
  "numerica",
  "rand",
-]
-
-[[package]]
-name = "hashbrown"
-version = "0.15.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9229cfe53dfd69f0609a49f65461bd93001ea1ef889cd5529dd176593f5338a1"
-dependencies = [
- "foldhash 0.1.5",
 ]
 
 [[package]]
@@ -283,7 +262,7 @@ checksum = "841d1cc9bed7f9236f321df977030373f4a4163ae1a7dbfe1a51a2c1a51d9100"
 dependencies = [
  "allocator-api2",
  "equivalent",
- "foldhash 0.2.0",
+ "foldhash",
 ]
 
 [[package]]
@@ -441,9 +420,9 @@ dependencies = [
 
 [[package]]
 name = "numerica"
-version = "2.0.0"
+version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "05bcf7d2ad3bb55bb374a43e7401d911825ee6c6be001bbee9385b4212d2dda9"
+checksum = "941849d46564eae737afbb1a7aa59bbc153e5f70c0a0e4079889efa68cc998bf"
 dependencies = [
  "ahash",
  "colored",
@@ -470,18 +449,6 @@ name = "paste"
 version = "1.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
-
-[[package]]
-name = "petgraph"
-version = "0.8.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8701b58ea97060d5e5b155d383a69952a60943f0e6dfe30b04c287beb0b27455"
-dependencies = [
- "fixedbitset",
- "hashbrown 0.15.5",
- "indexmap",
- "serde",
-]
 
 [[package]]
 name = "pin-project-lite"
@@ -765,9 +732,9 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "symbolica"
-version = "2.0.0"
+version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "189ab0716a5b21150f8ddee2e341b5e8d76300904423ac568f5a2d8c9b518655"
+checksum = "3fd74e1df5139590154bea2ca7e921d976efe7b0da079983d09f54d328edfe63"
 dependencies = [
  "ahash",
  "append-only-vec",
@@ -796,9 +763,9 @@ dependencies = [
 
 [[package]]
 name = "symjit"
-version = "2.18.7"
+version = "2.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "197b75404bf62fcc449a1c4c0a2dcb774795bb9bbea503dad095885515b4c1be"
+checksum = "41f54d4663441294b2ebee68fd9504c5483d31f99ee2e007f81ac3cbc246c5c1"
 dependencies = [
  "ahash",
  "anyhow",
@@ -807,7 +774,7 @@ dependencies = [
  "lazy_static",
  "libc",
  "num-complex",
- "petgraph",
+ "num-traits",
  "rand",
  "rayon",
  "region",
