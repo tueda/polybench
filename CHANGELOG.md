@@ -1,18 +1,33 @@
 # Changelog
 
 
+<a name="0.4.2"></a>
+
+## [0.4.2] (2026-07-27)
+
+### Fixed
+
+- Correct JVM version output. ([0ce385b](https://github.com/tueda/polybench/commit/0ce385b2ff795e5d35833098a2bfa21f00c13cf8))
+
+### Changed
+
+- Upgrade Symbolica from 2.0.0 to 2.2.0. ([6cf74c5](https://github.com/tueda/polybench/commit/6cf74c5d738bc204c3668a988d1c6d6bdc887c1d))
+
+- Upgrade FORM from 5.0.0 to 5.0.1. ([51a9097](https://github.com/tueda/polybench/commit/51a9097f340ab78f433485d284892eea2b5b5a5b))
+
+
 <a name="0.4.1"></a>
 
 ## [0.4.1] (2026-06-12)
 
 ### Changed
 
-- Upgrade Symbolica to  2.0.0 ([6eaabc0](https://github.com/tueda/polybench/commit/6eaabc09952ebdffb0a2143700fbc21d166c6410))
+- Upgrade Symbolica to 2.0.0. ([6eaabc0](https://github.com/tueda/polybench/commit/6eaabc09952ebdffb0a2143700fbc21d166c6410))
 
 
 ### Fixed
 
-- **flint:** Explicitly link `Threads::Threads` ([e8b098a](https://github.com/tueda/polybench/commit/e8b098a92cbfd46f564c237598796a53f2ea476e))
+- **flint:** Explicitly link `Threads::Threads`. ([e8b098a](https://github.com/tueda/polybench/commit/e8b098a92cbfd46f564c237598796a53f2ea476e))
 
 
 <a name="0.4.0"></a>
@@ -21,17 +36,17 @@
 
 ### Added
 
-- Add `--fail-on-setup-failure` command-line option to exit with an error on solver setup failures ([12965d9](https://github.com/tueda/polybench/commit/12965d94a85c037dea46efa3b57716c873b7702c))
-- Add `--no-<solver>` command-line options to skip solvers ([bc2dd5b](https://github.com/tueda/polybench/commit/bc2dd5b2de99c88c606ccf596987986017007d45))
+- Add `--fail-on-setup-failure` command-line option to exit with an error on solver setup failures. ([12965d9](https://github.com/tueda/polybench/commit/12965d94a85c037dea46efa3b57716c873b7702c))
+- Add `--no-<solver>` command-line options to skip solvers. ([bc2dd5b](https://github.com/tueda/polybench/commit/bc2dd5b2de99c88c606ccf596987986017007d45))
 
 ### Changed
 
-- Upgrade Symbolica to 1.5.1 ([34889fe](https://github.com/tueda/polybench/commit/34889fe511391aa6f75217ebf44e8a5aaec5706e))
-- Upgrade FLINT to 3.5.0 ([e7b8a46](https://github.com/tueda/polybench/commit/e7b8a46eaa434a0e3faea818d3beb8bbf11b6abe))
+- Upgrade Symbolica to 1.5.1. ([34889fe](https://github.com/tueda/polybench/commit/34889fe511391aa6f75217ebf44e8a5aaec5706e))
+- Upgrade FLINT to 3.5.0. ([e7b8a46](https://github.com/tueda/polybench/commit/e7b8a46eaa434a0e3faea818d3beb8bbf11b6abe))
 
 ### Fixed
 
-- **rings:** Fix compatibility with Java 8, 11, 17 and 21 ([ee15115](https://github.com/tueda/polybench/commit/ee1511541e79164abdc56e3ecca74744ec408e7c))
+- **rings:** Fix compatibility with Java 8, 11, 17 and 21. ([ee15115](https://github.com/tueda/polybench/commit/ee1511541e79164abdc56e3ecca74744ec408e7c))
 
 
 <a name="0.3.6"></a>
@@ -183,6 +198,7 @@
 - First public version.
 
 
+[0.4.2]: https://github.com/tueda/polybench/compare/0.4.1...0.4.2
 [0.4.1]: https://github.com/tueda/polybench/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/tueda/polybench/compare/0.3.6...0.4.0
 [0.3.6]: https://github.com/tueda/polybench/compare/0.3.5...0.3.6
