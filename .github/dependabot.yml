@@ -7,7 +7,6 @@ updates:
       - /polybench/solvers/symbolica
     schedule:
       interval: weekly
-    versioning-strategy: increase
 
   - package-ecosystem: docker
     directory: /
