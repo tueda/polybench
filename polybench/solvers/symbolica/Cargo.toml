@@ -6,4 +6,4 @@ edition = "2024"
 rust-version = "1.89"
 
 [dependencies]
-symbolica = "2.0.0"
+symbolica = "2.2.0"
