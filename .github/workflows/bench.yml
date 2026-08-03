@@ -98,7 +98,7 @@ jobs:
         with:
           path: |
             build
-            !build/**/buildtrees
+            !build/**/vcpkg/**
           key: ${{ runner.os }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock', 'polybench/**/vcpkg.json') }}
           restore-keys: ${{ runner.os }}-build-
 

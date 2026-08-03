@@ -133,7 +133,7 @@ jobs:
         with:
           path: |
             build
-            !build/**/buildtrees
+            !build/**/vcpkg/**
           key: ${{ runner.os }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock', 'polybench/**/vcpkg.json') }}
           restore-keys: ${{ runner.os }}-build-
 
@@ -217,7 +217,7 @@ jobs:
         with:
           path: |
             build
-            !build/**/buildtrees
+            !build/**/vcpkg/**
           key: python:${{ matrix.python-version }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock', 'polybench/**/vcpkg.json') }}
           restore-keys: python:${{ matrix.python-version }}-build-
 
