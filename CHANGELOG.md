@@ -1,6 +1,15 @@
 # Changelog
 
 
+<a name="0.4.3"></a>
+
+## [0.4.3] (2026-08-03)
+
+### Fixed
+
+- Correct the Symbolica version in `Cargo.toml`. ([73df443](https://github.com/tueda/polybench/commit/73df44376ddbfe41a1db3ef4afe2703021f1c76c))
+
+
 <a name="0.4.2"></a>
 
 ## [0.4.2] (2026-07-27)
@@ -198,6 +207,7 @@
 - First public version.
 
 
+[0.4.3]: https://github.com/tueda/polybench/compare/0.4.2...0.4.3
 [0.4.2]: https://github.com/tueda/polybench/compare/0.4.1...0.4.2
 [0.4.1]: https://github.com/tueda/polybench/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/tueda/polybench/compare/0.3.6...0.4.0
