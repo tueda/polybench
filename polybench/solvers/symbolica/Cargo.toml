@@ -6,4 +6,10 @@ edition = "2024"
 rust-version = "1.89"
 
 [dependencies]
-symbolica = "2.2.0"
+symbolica = "3.0.0"
+
+# Match Symbolica's release profile; dependency profiles are ignored by Cargo.
+[profile.release]
+opt-level = 3
+codegen-units = 1
+lto = true
