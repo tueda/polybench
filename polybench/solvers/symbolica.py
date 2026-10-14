@@ -22,8 +22,8 @@ class SymbolicaSolver(Solver):
 
         self.copy_resources()
 
-        if not self.run([*self.cargo_command, "build", "--release"]):
-            self.logger.warning("Note: Symbolica requires rust>=1.73")
+        if not self.run([*self.cargo_command, "build", "--release", "--locked"]):
+            self.logger.warning("Note: Symbolica requires rust>=1.89")
             raise SolverSetupError("build failed")
 
         version = (
