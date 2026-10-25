@@ -33,6 +33,9 @@ They are (in alphabetical order):
   will be automatically downloaded.
 - [Mathematica](https://www.wolfram.com/mathematica/):
   indeed, [Free Wolfram Engine for Developers](https://www.wolfram.com/engine/) is sufficient to run.
+- [Poly Mojo](https://github.com/Spellbound-Mojo/poly_mojo):
+  requires Mojo and precompiled Poly Mojo packages;
+  see [Poly Mojo setup](#poly-mojo-setup) below.
 - [reFORM](https://reform.readthedocs.io/en/latest/):
   automatically downloaded
   (requires [Rust](https://www.rust-lang.org/) >= 1.36).
@@ -101,6 +104,64 @@ docker build -t polybench:latest https://github.com/tueda/polybench.git
 docker run -it --rm polybench:latest
 ./run.sh --all
 ```
+
+
+Poly Mojo setup
+--------------
+
+The `--polymojo` backend measures ordinary integer GCD and factorisation.
+`--polymojocertified` measures the operation together with certificate construction
+and checks every certificate before accepting a result. Its CSV time excludes
+verification; per-case `compute_ns` and `verification_ns` are saved in
+`certificate-timings.json` inside the solver output directory when using
+`--keep-temp`. Compilation, input parsing and output serialisation are untimed.
+The ordinary factorisation API still constructs some evidence internally.
+Its factorisation certificate checks recomposition; polybench's existing checks
+also compare products and factor counts with other backends.
+
+Poly Mojo currently requires building from source. The adapter has been tested
+with Mojo 1.2.0 and Poly Mojo revision
+[`72c9223`](https://github.com/Spellbound-Mojo/poly_mojo/commit/72c92234ba9f0b85a7d8d4476ccb61cb6573716e),
+on Linux x86-64. Keep polybench in its own Python environment: Mojo's environment
+may supply a different Python version. For example, from the polybench checkout:
+
+```sh
+python3.12 -m venv .venv
+.venv/bin/python -m pip install .
+```
+
+Build the library packages once with [Pixi](https://pixi.sh/) and activate Mojo:
+
+```sh
+git clone https://github.com/Spellbound-Mojo/poly_mojo.git ../poly_mojo
+cd ../poly_mojo
+git checkout 72c92234ba9f0b85a7d8d4476ccb61cb6573716e
+pixi run --locked build
+export POLY_MOJO_PATH="$PWD/build"
+eval "$(pixi shell-hook --shell bash)"
+cd -
+```
+
+Then, from the polybench checkout:
+
+```sh
+.venv/bin/python -m polybench --flint --polymojo --polymojocertified --keep-temp \
+  --type nontrivial-gcd --nvars 2 --max-degree 3 --max-nterms 4
+```
+
+`POLY_MOJO_PATH` must be an absolute directory containing `poly.mojoc`,
+`polynomials.mojoc` and `apn_mojo.mojoc`. Keep the Mojo environment activated so
+the compiler can locate its standard library and runtime. The compiler is selected
+with `MOJO_COMMAND`, or `mojo` on `PATH`, and must match the one used for those packages.
+Use a platform supported by your Mojo installation; configuring this optional
+backend does not change polybench's Python requirements.
+
+Both modes share a cached driver for each variable count. Changing the compiler,
+its installation or runtime location, driver source or compiled packages
+invalidates that cache. Package hashes and compiler details are saved in
+`provenance.json` with `--keep-temp`. The adapter
+does not rebuild the library or download dependencies. To run all other backends
+without installing Poly Mojo, use `--all --no-polymojo --no-polymojocertified`.
 
 
 Example

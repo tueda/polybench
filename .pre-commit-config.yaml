@@ -71,6 +71,7 @@ repos:
     -   id: mypy
         additional_dependencies:
         -   types-toml==0.10.8.20260518
+        -   pytest==7.0.1
 
 -   repo: https://github.com/scop/pre-commit-shfmt
     rev: v3.14.1-1

@@ -11,7 +11,7 @@ def is_compatible_version(version: str, specifiers: str) -> bool:
     """Check if the version is compatible with the specifiers."""
     if specifiers == "*":
         return True
-    return SpecifierSet(specifiers).contains(version)  # type: ignore[no-any-return]
+    return bool(SpecifierSet(specifiers).contains(version))
 
 
 def poetry_lock_to_requirements(
