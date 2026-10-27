@@ -119,27 +119,23 @@ The ordinary factorisation API still constructs some evidence internally.
 Its factorisation certificate checks recomposition; polybench's existing checks
 also compare products and factor counts with other backends.
 
-Poly Mojo currently requires building from source. The adapter has been tested
-with Mojo 1.2.0 and Poly Mojo revision
-[`72c9223`](https://github.com/Spellbound-Mojo/poly_mojo/commit/72c92234ba9f0b85a7d8d4476ccb61cb6573716e),
-on Linux x86-64. Keep polybench in its own Python environment: Mojo's environment
-may supply a different Python version. For example, from the polybench checkout:
+The pinned [Pixi environment](environments/polymojo/pixi.toml) installs the
+published community-channel packages **Poly Mojo 1.0.1**, **APN Mojo 1.0.2**, and
+**Mojo 1.2.0** on Linux x86-64. Its lockfile records the exact dependency builds.
+Keep polybench in its own Python environment. From the polybench checkout:
 
 ```sh
 python3.12 -m venv .venv
 .venv/bin/python -m pip install .
 ```
 
-Build the library packages once with [Pixi](https://pixi.sh/) and activate Mojo:
+Install the precompiled library packages with [Pixi](https://pixi.sh/) and
+activate their matching Mojo environment:
 
 ```sh
-git clone https://github.com/Spellbound-Mojo/poly_mojo.git ../poly_mojo
-cd ../poly_mojo
-git checkout 72c92234ba9f0b85a7d8d4476ccb61cb6573716e
-pixi run --locked build
-export POLY_MOJO_PATH="$PWD/build"
-eval "$(pixi shell-hook --shell bash)"
-cd -
+pixi install --locked --manifest-path environments/polymojo/pixi.toml
+eval "$(pixi shell-hook --manifest-path environments/polymojo/pixi.toml --shell bash)"
+export POLY_MOJO_PATH="$CONDA_PREFIX/lib/mojo"
 ```
 
 Then, from the polybench checkout:
