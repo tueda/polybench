@@ -185,24 +185,11 @@ class PolyMojoSolver(Solver):
             raise SolverSetupError(f"failed to prepare Poly Mojo: {error}") from error
 
     def _prepare_driver(self, problems: ProblemSet) -> str:
-        package_path = os.environ.get(self._env_var)
-        if not package_path:
-            raise SolverSetupError(
-                "set POLY_MOJO_PATH to the precompiled package directory"
-            )
-        include = Path(package_path).expanduser()
-        if not include.is_absolute():
-            raise SolverSetupError("POLY_MOJO_PATH must be an absolute path")
+        include, mojo, launcher, modular_home = self._prepare_environment()
         for name in PACKAGES:
             if not (include / name).is_file():
                 raise SolverSetupError(f"missing precompiled package: {include / name}")
-        mojo = shutil.which(os.environ.get("MOJO_COMMAND", "mojo"))
-        if not mojo:
-            raise SolverSetupError(
-                "Mojo executable not found; set MOJO_COMMAND or PATH"
-            )
-        mojo = str(Path(mojo).resolve())
-        version = self.get_output([mojo, "--version"])
+        version = self.get_output([*launcher, mojo, "--version"])
         if not version:
             raise SolverSetupError("failed to get Mojo version")
 
@@ -212,7 +199,7 @@ class PolyMojoSolver(Solver):
             "source_sha256": self.sha256(SOURCE),
             "compiler": version[0],
             "compiler_path": mojo,
-            "modular_home": os.environ.get("MODULAR_HOME", ""),
+            "modular_home": modular_home,
             "platform": [platform.system(), platform.machine()],
             "packages": {name: self.sha256(include / name) for name in PACKAGES},
             "flags": flags,
@@ -244,6 +231,7 @@ class PolyMojoSolver(Solver):
                     raise SolverSetupError("Poly Mojo packages changed during setup")
             pending = folder / "driver.tmp"
             command = [
+                *launcher,
                 mojo,
                 "build",
                 *flags,
@@ -270,6 +258,60 @@ class PolyMojoSolver(Solver):
             self.logger.info(f"Reusing shared driver for {problems.n_vars} variables")
         self._binary, self._provenance = binary, cached
         return f"Poly Mojo build {key[:12]}; {version[0]}; {self._mode}"
+
+    def _prepare_environment(self) -> Tuple[Path, str, Sequence[str], str]:
+        # An explicit package directory retains the source-development workflow.
+        package_path = os.environ.get(self._env_var)
+        if not package_path:
+            return self._install_environment()
+        include = Path(package_path).expanduser()
+        if not include.is_absolute():
+            raise SolverSetupError("POLY_MOJO_PATH must be an absolute path")
+        mojo = shutil.which(os.environ.get("MOJO_COMMAND", "mojo"))
+        if not mojo:
+            raise SolverSetupError(
+                "Mojo executable not found; set MOJO_COMMAND or PATH"
+            )
+        return (
+            include,
+            str(Path(mojo).resolve()),
+            (),
+            os.environ.get("MODULAR_HOME", ""),
+        )
+
+    def _install_environment(self) -> Tuple[Path, str, Sequence[str], str]:
+        pixi = shutil.which("pixi")
+        if not pixi:
+            raise SolverSetupError("Pixi executable not found; install Pixi on PATH")
+        folder = self.build_dir.parent / "polymojo-shared" / "environment"
+        folder.mkdir(parents=True, exist_ok=True)
+        self.copy_resources("polymojo", folder)
+        manifest = str(folder / "pixi.toml")
+        options = ["--locked", "--manifest-path", manifest]
+        self.logger.info("Preparing pinned Poly Mojo packages with Pixi")
+        if not self.run([pixi, "install", *options], timeout=1800):
+            raise SolverSetupError("Pixi package installation failed")
+        # Ask Pixi for the prefix instead of assuming its environment location.
+        # Do not activate it in the parent process: other backends use Python,
+        # compilers and runtimes from the original environment.
+        output = self.get_output([pixi, "shell-hook", *options, "--json"])
+        try:
+            variables = json.loads("\n".join(output or ()))["environment_variables"]
+            prefix = Path(variables["CONDA_PREFIX"])
+            modular_home = variables["MODULAR_HOME"]
+            if not prefix.is_absolute() or not isinstance(modular_home, str):
+                raise ValueError("invalid Pixi environment")
+        except (ValueError, KeyError, TypeError) as error:
+            raise SolverSetupError("failed to read Pixi environment") from error
+        mojo = prefix / "bin" / "mojo"
+        if not mojo.is_file():
+            raise SolverSetupError("Mojo executable missing from Pixi environment")
+        return (
+            prefix / "lib" / "mojo",
+            str(mojo.resolve()),
+            [pixi, "run", *options],
+            modular_home,
+        )
 
     def _solve(self, problems: ProblemSet) -> Optional[Sequence[Result]]:
         pieces = [f"{len(problems)}\n"]
