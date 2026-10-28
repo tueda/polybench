@@ -126,7 +126,7 @@ Install [Pixi](https://pixi.sh/), then run from the polybench checkout:
   --type nontrivial-gcd --nvars 2 --max-degree 3 --max-nterms 4
 ```
 
-The adapter automatically installs precompiled **Poly Mojo 1.0.1**, **APN Mojo
+The adapter automatically installs precompiled **Poly Mojo 1.0.2**, **APN Mojo
 1.0.2**, and their matching **Mojo 1.2.0** compiler on Linux x86-64. The backend's
 [manifest and lockfile](polybench/solvers/polymojo/pixi.toml) pin the package builds.
 Both modes share the environment and cached drivers under `build/polymojo-shared`;
