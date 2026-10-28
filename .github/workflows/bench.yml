@@ -82,9 +82,14 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install dependencies
-        uses: awalsh128/cache-apt-pkgs-action@latest
+        uses: awalsh128/cache-apt-pkgs-action@v1
         with:
           packages: autoconf-archive singular-ui
+          version: 1.0
+        env:
+          # This avoids skipping running apt-fast update.
+          # See: https://github.com/awalsh128/cache-apt-pkgs-action/issues/166
+          ACT: true
 
       - name: Cache for venv
         uses: actions/cache@v6
