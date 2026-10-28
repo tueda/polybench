@@ -34,8 +34,8 @@ They are (in alphabetical order):
 - [Mathematica](https://www.wolfram.com/mathematica/):
   indeed, [Free Wolfram Engine for Developers](https://www.wolfram.com/engine/) is sufficient to run.
 - [Poly Mojo](https://github.com/Spellbound-Mojo/poly_mojo):
-  requires Mojo and precompiled Poly Mojo packages;
-  see [Poly Mojo setup](#poly-mojo-setup) below.
+  automatically installed with its matching Mojo compiler via [Pixi](https://pixi.sh/)
+  on Linux x86-64; see [Poly Mojo setup](#poly-mojo-setup) below.
 - [reFORM](https://reform.readthedocs.io/en/latest/):
   automatically downloaded
   (requires [Rust](https://www.rust-lang.org/) >= 1.36).
@@ -119,45 +119,29 @@ The ordinary factorisation API still constructs some evidence internally.
 Its factorisation certificate checks recomposition; polybench's existing checks
 also compare products and factor counts with other backends.
 
-The pinned [Pixi environment](environments/polymojo/pixi.toml) installs the
-published community-channel packages **Poly Mojo 1.0.1**, **APN Mojo 1.0.2**, and
-**Mojo 1.2.0** on Linux x86-64. Its lockfile records the exact dependency builds.
-Keep polybench in its own Python environment. From the polybench checkout:
+Install [Pixi](https://pixi.sh/), then run from the polybench checkout:
 
 ```sh
-python3.12 -m venv .venv
-.venv/bin/python -m pip install .
-```
-
-Install the precompiled library packages with [Pixi](https://pixi.sh/) and
-activate their matching Mojo environment:
-
-```sh
-pixi install --locked --manifest-path environments/polymojo/pixi.toml
-eval "$(pixi shell-hook --manifest-path environments/polymojo/pixi.toml --shell bash)"
-export POLY_MOJO_PATH="$CONDA_PREFIX/lib/mojo"
-```
-
-Then, from the polybench checkout:
-
-```sh
-.venv/bin/python -m polybench --flint --polymojo --polymojocertified --keep-temp \
+./run.sh --polymojo --polymojocertified --keep-temp \
   --type nontrivial-gcd --nvars 2 --max-degree 3 --max-nterms 4
 ```
 
-`POLY_MOJO_PATH` must be an absolute directory containing `poly.mojoc`,
-`polynomials.mojoc` and `apn_mojo.mojoc`. Keep the Mojo environment activated so
-the compiler can locate its standard library and runtime. The compiler is selected
-with `MOJO_COMMAND`, or `mojo` on `PATH`, and must match the one used for those packages.
-Use a platform supported by your Mojo installation; configuring this optional
-backend does not change polybench's Python requirements.
+The adapter automatically installs precompiled **Poly Mojo 1.0.1**, **APN Mojo
+1.0.2**, and their matching **Mojo 1.2.0** compiler on Linux x86-64. The backend's
+[manifest and lockfile](polybench/solvers/polymojo/pixi.toml) pin the package builds.
+Both modes share the environment and cached drivers under `build/polymojo-shared`;
+no shell activation, package-path configuration, or library source build is needed.
+Installation and driver compilation happen before benchmark timers start.
 
-Both modes share a cached driver for each variable count. Changing the compiler,
-its installation or runtime location, driver source or compiled packages
-invalidates that cache. Package hashes and compiler details are saved in
-`provenance.json` with `--keep-temp`. The adapter
-does not rebuild the library or download dependencies. To run all other backends
-without installing Poly Mojo, use `--all --no-polymojo --no-polymojocertified`.
+For source development, `POLY_MOJO_PATH` can instead point to an absolute directory
+containing precompiled `poly.mojoc`, `polynomials.mojoc` and `apn_mojo.mojoc` files.
+With this override, activate the matching Mojo environment and optionally select
+its compiler with `MOJO_COMMAND`; Pixi installation is bypassed.
+
+Changing the compiler, runtime location, driver source or package contents
+invalidates the driver cache. Package hashes and compiler details are saved in
+`provenance.json` with `--keep-temp`. To run other backends without installing
+Poly Mojo, use `--all --no-polymojo --no-polymojocertified`.
 
 
 Example

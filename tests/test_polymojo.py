@@ -2,7 +2,9 @@ import functools
 import json
 import logging
 import operator
+import os
 import platform
+import runpy
 import shutil
 from pathlib import Path
 from typing import Any, Dict, List, Sequence
@@ -259,7 +261,7 @@ def test_cache_invalidation(
 
 
 @pytest.mark.parametrize(
-    "missing", ["environment", "relative", "package", "compiler", "version"]
+    "missing", ["pixi", "relative", "package", "compiler", "version"]
 )
 def test_unavailable_dependencies_raise_setup_error(
     tmp_path: Path,
@@ -267,8 +269,9 @@ def test_unavailable_dependencies_raise_setup_error(
     compiler: Dict[str, Any],
     missing: str,
 ) -> None:
-    if missing == "environment":
+    if missing == "pixi":
         monkeypatch.delenv("POLY_MOJO_PATH")
+        monkeypatch.setattr(shutil, "which", lambda name: None)
     elif missing == "relative":
         monkeypatch.setenv("POLY_MOJO_PATH", "relative/path")
     elif missing == "package":
@@ -336,3 +339,129 @@ def test_solver_failure_is_not_a_result(
 
     monkeypatch.setattr(polymojo.PolyMojoSolver, "run", run)
     assert plain.solve(problems()) is None
+
+
+@pytest.fixture
+def pixi(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, compiler: Dict[str, Any]
+) -> Dict[str, Any]:
+    monkeypatch.delenv("POLY_MOJO_PATH")
+    # Pixi may place environments outside the workspace. Use its reported prefix.
+    prefix = tmp_path / "detached environment with spaces"
+    (prefix / "bin").mkdir(parents=True)
+    (prefix / "bin/mojo").write_bytes(b"compiler")
+    shutil.copytree(str(compiler["include"]), str(prefix / "lib/mojo"))
+    monkeypatch.setattr(shutil, "which", lambda name: "/tools/pixi")
+    state: Dict[str, Any] = {
+        "install_ok": True,
+        "commands": [],
+        "output": json.dumps(
+            {
+                "environment_variables": {
+                    "CONDA_PREFIX": str(prefix),
+                    "MODULAR_HOME": str(prefix / "share/max"),
+                    "PATH": str(prefix / "bin"),
+                }
+            }
+        ),
+        "prefix": prefix,
+    }
+
+    def output(self: Solver, command: Sequence[str]) -> Sequence[str]:
+        state["commands"].append(command)
+        if command[1] == "shell-hook":
+            return [str(state["output"])]
+        return [str(compiler["version"])]
+
+    def run(self: Solver, command: Sequence[str], **kwargs: Any) -> bool:
+        state["commands"].append(command)
+        assert command[0] == "/tools/pixi"
+        assert "--locked" in command
+        if command[1] == "install":
+            manifest = Path(command[command.index("--manifest-path") + 1])
+            assert (
+                manifest.read_bytes()
+                == polymojo.SOURCE.with_name("pixi.toml").read_bytes()
+            )
+            assert manifest.with_suffix(".lock").read_bytes() == (
+                polymojo.SOURCE.with_name("pixi.lock").read_bytes()
+            )
+            return bool(state["install_ok"])
+        compiler["builds"].append(command)
+        Path(command[-1]).write_bytes(b"compiled driver")
+        return True
+
+    monkeypatch.setattr(polymojo.PolyMojoSolver, "get_output", output)
+    monkeypatch.setattr(polymojo.PolyMojoSolver, "run", run)
+    return state
+
+
+def test_automatic_setup_shares_locked_environment_without_activation(
+    tmp_path: Path, compiler: Dict[str, Any], pixi: Dict[str, Any]
+) -> None:
+    original = dict(os.environ)
+    plain, certified = solvers(tmp_path)
+    plain.prepare(problems())
+    certified.prepare(problems())
+    assert dict(os.environ) == original
+    installs = [c for c in pixi["commands"] if c[1] == "install"]
+    assert len(installs) == 2
+    assert installs[0] == installs[1]
+    assert len(compiler["builds"]) == 1
+    assert plain._binary == certified._binary
+    inputs = plain._provenance["inputs"]
+    assert inputs["compiler_path"] == str(pixi["prefix"] / "bin/mojo")
+    assert inputs["modular_home"] == str(pixi["prefix"] / "share/max")
+
+
+@pytest.mark.parametrize("failure", ["install", "json", "prefix", "mojo", "package"])
+def test_automatic_setup_failure_is_not_cached(
+    tmp_path: Path, compiler: Dict[str, Any], pixi: Dict[str, Any], failure: str
+) -> None:
+    if failure == "install":
+        pixi["install_ok"] = False
+    elif failure == "json":
+        pixi["output"] = "malformed response"
+    elif failure == "prefix":
+        pixi["output"] = '{"environment_variables": {"CONDA_PREFIX": "relative"}}'
+    elif failure == "mojo":
+        (pixi["prefix"] / "bin/mojo").unlink()
+    else:
+        (pixi["prefix"] / "lib/mojo" / polymojo.PACKAGES[0]).unlink()
+    with pytest.raises(SolverSetupError):
+        solvers(tmp_path)[0].prepare(problems())
+    assert not compiler["builds"]
+
+
+@pytest.mark.parametrize(
+    "failure", ["none", "missing", "backend", "cases", "nan", "negative", "mismatch"]
+)
+def test_ci_result_check(tmp_path: Path, failure: str) -> None:
+    path = tmp_path / "0001.csv"
+    header = "problem_number,PolyMojo,PolyMojoCertified\n"
+    row = "2,0.001,0.002\n"
+    if failure == "backend":
+        header = header.replace("PolyMojoCertified", "FLINT")
+    elif failure in ("nan", "negative"):
+        row = row.replace("0.002", "nan" if failure == "nan" else "-1")
+    if failure != "missing":
+        path.write_text(header + row)
+    path.with_suffix(".log").write_text(
+        "[ ERROR  ] Check       PolyMojo:FLINT:2: inconsistent answers\n"
+        if failure == "mismatch"
+        else "[  INFO  ] PolyMojo 0.003 sec\n"
+    )
+    validate = runpy.run_path(str(polymojo.SOURCE.with_name("check_results.py")))[
+        "validate_results"
+    ]
+    args = (
+        tmp_path,
+        ["PolyMojo", "PolyMojoCertified"],
+        1,
+        2 if failure == "cases" else 1,
+    )
+    if failure == "none":
+        validate(*args)
+    else:
+        with pytest.raises(ValueError, match="expected|missing|invalid|comparison"):
+            validate(*args)

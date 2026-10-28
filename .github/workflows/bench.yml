@@ -33,6 +33,13 @@ jobs:
         with:
           python-version: '3.10'
 
+      - name: Set up Pixi
+        uses: prefix-dev/setup-pixi@v0.11.2
+        with:
+          pixi-version: v0.81.0
+          run-install: false
+          cache: false
+
       - name: Cache for pip
         uses: actions/cache@v6
         with:
@@ -98,20 +105,29 @@ jobs:
           key: ${{ runner.os }}-venv-${{ env.pythonLocation }}-${{ hashFiles('**/poetry.lock') }}
           # We can't use restore-keys because venv should contain all required packages, otherwise fails.
 
+      # Mojo targets the host CPU; share drivers within a job, not across runners.
       - name: Cache for build
         uses: actions/cache@v6
         with:
           path: |
             build
             !build/**/vcpkg/**
-          key: ${{ runner.os }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock', 'polybench/**/vcpkg.json') }}
+            !build/polymojo-shared/*/driver
+            !build/polymojo-shared/*/driver.tmp
+          key: ${{ runner.os }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock', 'polybench/**/vcpkg.json', 'polybench/solvers/polymojo/pixi.lock') }}
           restore-keys: ${{ runner.os }}-build-
 
+      - name: Build Poly Mojo
+        run: ./run.sh --build-only --fail-on-setup-failure --color always --debug --polymojo
+
       - name: Build
-        run: ./run.sh --build-only --color always --debug --all
+        run: ./run.sh --build-only --color always --debug --all --no-polymojocertified
 
       - name: Run benchmark
-        run: ./run.sh --type ${{ matrix.problem-type }} --output-directory output-${{ matrix.problem-type }} --color always --all
+        run: ./run.sh --type ${{ matrix.problem-type }} --output-directory output-${{ matrix.problem-type }} --color always --all --no-polymojocertified
+
+      - name: Verify Poly Mojo results
+        run: python polybench/solvers/polymojo/check_results.py output-${{ matrix.problem-type }} PolyMojo --batches 1
 
       - name: Save results
         uses: actions/upload-artifact@v7
