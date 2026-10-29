@@ -13,8 +13,13 @@ runs:
       if: runner.os == 'Linux'
       shell: bash
       run: |
-        CPU_INFO=$(LC_ALL=C lscpu | sed -n 's/^Model name: *//p')
-        echo "CPU_INFO=$CPU_INFO" >>"$GITHUB_ENV"
+        CPU_MODEL=$(LC_ALL=C lscpu | sed -n 's/^Model name: *//p')
+        test -n "$CPU_MODEL"
+        CPU_FLAGS=$(LC_ALL=C lscpu | sed -n 's/^Flags: *//p')
+        test -n "$CPU_FLAGS"
+        CPU_FLAGS_HASH=$(printf '%s' "$CPU_FLAGS" | sha256sum | cut -d ' ' -f 1)
+        test -n "$CPU_FLAGS_HASH"
+        echo "CPU_INFO=$CPU_MODEL-$CPU_FLAGS_HASH" >>"$GITHUB_ENV"
 
     - name: Get CPU model (macOS)
       if: runner.os == 'macOS'
