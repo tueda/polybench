@@ -105,23 +105,21 @@ jobs:
           key: ${{ runner.os }}-venv-${{ env.pythonLocation }}-${{ hashFiles('**/poetry.lock') }}
           # We can't use restore-keys because venv should contain all required packages, otherwise fails.
 
-      # Mojo targets the host CPU; share drivers within a job, not across runners.
+      - name: Get build cache prefix
+        id: get-prefix
+        uses: ./.github/actions/get-build-cache-prefix
+
       - name: Cache for build
         uses: actions/cache@v6
         with:
           path: |
-            build
-            !build/**/vcpkg/**
-            !build/polymojo-shared/*/driver
-            !build/polymojo-shared/*/driver.tmp
-          key: ${{ runner.os }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock', 'polybench/**/vcpkg.json', 'polybench/solvers/polymojo/pixi.lock') }}
-          restore-keys: ${{ runner.os }}-build-
-
-      - name: Build Poly Mojo
-        run: ./run.sh --build-only --fail-on-setup-failure --color always --debug --polymojo
+            build/*/*
+            !build/*/vcpkg
+          key: ${{ runner.os }}-${{ steps.get-prefix.outputs.prefix }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock', 'polybench/**/vcpkg.json', 'polybench/solvers/polymojo/pixi.lock') }}
+          restore-keys: ${{ runner.os }}-${{ steps.get-prefix.outputs.prefix }}-build-
 
       - name: Build
-        run: ./run.sh --build-only --color always --debug --all --no-polymojocertified
+        run: ./run.sh --build-only --fail-on-setup-failure --color always --debug --all --no-fermat --no-mathematica --no-polymojocertified
 
       - name: Run benchmark
         run: ./run.sh --type ${{ matrix.problem-type }} --output-directory output-${{ matrix.problem-type }} --color always --all --no-polymojocertified

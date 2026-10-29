@@ -140,17 +140,18 @@ jobs:
       # NOTE: for testing purposes, we don't cache the entire contents of venv;
       # cf. bench.yml.
 
-      # Mojo targets the host CPU; share drivers within a job, not across runners.
+      - name: Get build cache prefix
+        id: get-prefix
+        uses: ./.github/actions/get-build-cache-prefix
+
       - name: Cache for build
         uses: actions/cache@v6
         with:
           path: |
-            build
-            !build/**/vcpkg/**
-            !build/polymojo-shared/*/driver
-            !build/polymojo-shared/*/driver.tmp
-          key: ${{ runner.os }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock', 'polybench/**/vcpkg.json', 'polybench/solvers/polymojo/pixi.lock') }}
-          restore-keys: ${{ runner.os }}-build-
+            build/*/*
+            !build/*/vcpkg
+          key: ${{ runner.os }}-${{ steps.get-prefix.outputs.prefix }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock', 'polybench/**/vcpkg.json', 'polybench/solvers/polymojo/pixi.lock') }}
+          restore-keys: ${{ runner.os }}-${{ steps.get-prefix.outputs.prefix }}-build-
 
       - name: Build
         run: ./run.sh --build-only --fail-on-setup-failure --color always --debug --all --no-fermat --no-mathematica
@@ -236,14 +237,21 @@ jobs:
           apt-get update
           apt-get install -y -q singular-ui
 
+      - name: Get build cache prefix
+        id: get-prefix
+        uses: ./.github/actions/get-build-cache-prefix
+        env:
+          ImageOS: python
+          ImageVersion: '${{ matrix.python-version }}'
+
       - name: Cache for build
         uses: actions/cache@v6
         with:
           path: |
-            build
-            !build/**/vcpkg/**
-          key: python:${{ matrix.python-version }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock', 'polybench/**/vcpkg.json') }}
-          restore-keys: python:${{ matrix.python-version }}-build-
+            build/*/*
+            !build/*/vcpkg
+          key: python:${{ matrix.python-version }}-${{ runner.os }}-${{ steps.get-prefix.outputs.prefix }}-build-${{ hashFiles('polybench/**/*.gradle*', 'polybench/**/Cargo.lock', 'polybench/**/vcpkg.json', 'polybench/solvers/polymojo/pixi.lock') }}
+          restore-keys: python:${{ matrix.python-version }}-${{ runner.os }}-${{ steps.get-prefix.outputs.prefix }}-build-
 
       - name: Build
         # Disable FLINT because it depends on GMP, which has a known issue with GCC 10 in vcpkg.

@@ -1,0 +1,39 @@
+name: get-build-cache-prefix
+description: >-
+  Get the build cache prefix.
+outputs:
+  prefix:
+    description: "Build cache prefix"
+    value: ${{ steps.get-prefix.outputs.prefix }}
+
+runs:
+  using: composite
+  steps:
+    - name: Get CPU model (Linux)
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        CPU_INFO=$(LC_ALL=C lscpu | sed -n 's/^Model name: *//p')
+        echo "CPU_INFO=$CPU_INFO" >>"$GITHUB_ENV"
+
+    - name: Get CPU model (macOS)
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        CPU_INFO=$(sysctl -n machdep.cpu.brand_string)
+        echo "CPU_INFO=$CPU_INFO" >>"$GITHUB_ENV"
+
+    - name: Get CPU model (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $CPU_INFO = (Get-CimInstance Win32_Processor | Select-Object -First 1).Name
+        "CPU_INFO=$CPU_INFO" >>$env:GITHUB_ENV
+
+    - name: Get build cache prefix
+      id: get-prefix
+      shell: bash
+      run: |
+        CPU_INFO=$(printf '%s' "$CPU_INFO" | LC_ALL=C sed -E 's/[^A-Za-z0-9._-]+/_/g; s/^_+//; s/_+$//')
+        test -n "$CPU_INFO"
+        echo "prefix=${ImageOS:?}-${ImageVersion:?}-$CPU_INFO" >>"$GITHUB_OUTPUT"
