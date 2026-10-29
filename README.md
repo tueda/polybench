@@ -44,8 +44,8 @@ They are (in alphabetical order):
   (requires [JDK](https://www.oracle.com/technetwork/java/) >= 8).
 - [Singular](https://www.singular.uni-kl.de/)
 - [Symbolica](https://symbolica.io/):
-  version 3.0, automatically downloaded
-  (requires [Rust](https://www.rust-lang.org/) >= 1.89),
+  version 3.0.1, automatically downloaded
+  (requires [Rust](https://www.rust-lang.org/) >= 1.96),
   running in [restricted mode](https://symbolica.io/docs/get_started.html#license).
   Built with optimization level 3, full link-time optimization, one codegen unit,
   and `target-cpu=native`, with Symbolica's default faster allocator and GMP backend.

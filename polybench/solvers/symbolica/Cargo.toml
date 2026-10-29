@@ -3,10 +3,10 @@ name = "polybench-symbolica"
 version = "0.1.0"
 authors = ["Takahiro Ueda <t.ueda.od@juntendo.ac.jp>"]
 edition = "2024"
-rust-version = "1.89"
+rust-version = "1.96"
 
 [dependencies]
-symbolica = "3.0.0"
+symbolica = "3.0.1"
 
 # Match Symbolica's release profile; dependency profiles are ignored by Cargo.
 [profile.release]
