@@ -105,6 +105,8 @@ jobs:
           key: ${{ runner.os }}-venv-${{ env.pythonLocation }}-${{ hashFiles('**/poetry.lock') }}
           # We can't use restore-keys because venv should contain all required packages, otherwise fails.
 
+      - run: lscpu
+
       - name: Get build cache prefix
         id: get-prefix
         uses: ./.github/actions/get-build-cache-prefix

@@ -140,6 +140,8 @@ jobs:
       # NOTE: for testing purposes, we don't cache the entire contents of venv;
       # cf. bench.yml.
 
+      - run: lscpu
+
       - name: Get build cache prefix
         id: get-prefix
         uses: ./.github/actions/get-build-cache-prefix
@@ -236,6 +238,8 @@ jobs:
             /etc/apt/sources.list
           apt-get update
           apt-get install -y -q singular-ui
+
+      - run: lscpu
 
       - name: Get build cache prefix
         id: get-prefix
