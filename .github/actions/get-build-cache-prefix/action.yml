@@ -9,7 +9,7 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Get CPU model (Linux)
+    - name: Get CPU information (Linux)
       if: runner.os == 'Linux'
       shell: bash
       run: |
@@ -18,14 +18,14 @@ runs:
         CPU_FLAGS_HASH=$(printf '%s' "${CPU_FLAGS:?}" | sha256sum | cut -d ' ' -f 1)
         echo "CPU_INFO=${CPU_MODEL:?}-${CPU_FLAGS_HASH:?}" >>"$GITHUB_ENV"
 
-    - name: Get CPU model (macOS)
+    - name: Get CPU information (macOS)
       if: runner.os == 'macOS'
       shell: bash
       run: |
         CPU_INFO=$(sysctl -n machdep.cpu.brand_string)
         echo "CPU_INFO=$CPU_INFO" >>"$GITHUB_ENV"
 
-    - name: Get CPU model (Windows)
+    - name: Get CPU information (Windows)
       if: runner.os == 'Windows'
       shell: pwsh
       run: |
