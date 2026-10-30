@@ -1,0 +1,45 @@
+name: get-build-cache-prefix
+description: >-
+  Get the build cache prefix.
+outputs:
+  prefix:
+    description: "Build cache prefix"
+    value: ${{ steps.get-prefix.outputs.prefix }}
+
+runs:
+  using: composite
+  steps:
+    # Runners with the same CPU model may expose different CPU flags.
+    # See, for example:
+    # https://github.com/apache/flink-agents/issues/893#issuecomment-4974768889
+    # https://github.com/JuliaLang/julia/issues/62420
+    # Including CPU flags in the cache key is currently implemented only for Linux.
+    - name: Get CPU information (Linux)
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        CPU_MODEL=$(LC_ALL=C lscpu | sed -n 's/^Model name: *//p')
+        CPU_FLAGS=$(LC_ALL=C lscpu | sed -n 's/^Flags: *//p')
+        CPU_FLAGS_HASH=$(printf '%s' "${CPU_FLAGS:?}" | sha256sum | cut -d ' ' -f 1)
+        echo "CPU_INFO=${CPU_MODEL:?}-${CPU_FLAGS_HASH:?}" >>"$GITHUB_ENV"
+
+    - name: Get CPU information (macOS)
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        CPU_INFO=$(sysctl -n machdep.cpu.brand_string)
+        echo "CPU_INFO=$CPU_INFO" >>"$GITHUB_ENV"
+
+    - name: Get CPU information (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $CPU_INFO = (Get-CimInstance Win32_Processor | Select-Object -First 1).Name
+        "CPU_INFO=$CPU_INFO" >>$env:GITHUB_ENV
+
+    - name: Get build cache prefix
+      id: get-prefix
+      shell: bash
+      run: |
+        CPU_INFO=$(printf '%s' "$CPU_INFO" | LC_ALL=C sed -E 's/[^A-Za-z0-9._-]+/_/g; s/^_+//; s/_+$//')
+        echo "prefix=${ImageOS:?}-${ImageVersion:?}-${CPU_INFO:?}" >>"$GITHUB_OUTPUT"
