@@ -14,12 +14,9 @@ runs:
       shell: bash
       run: |
         CPU_MODEL=$(LC_ALL=C lscpu | sed -n 's/^Model name: *//p')
-        test -n "$CPU_MODEL"
         CPU_FLAGS=$(LC_ALL=C lscpu | sed -n 's/^Flags: *//p')
-        test -n "$CPU_FLAGS"
-        CPU_FLAGS_HASH=$(printf '%s' "$CPU_FLAGS" | sha256sum | cut -d ' ' -f 1)
-        test -n "$CPU_FLAGS_HASH"
-        echo "CPU_INFO=$CPU_MODEL-$CPU_FLAGS_HASH" >>"$GITHUB_ENV"
+        CPU_FLAGS_HASH=$(printf '%s' "${CPU_FLAGS:?}" | sha256sum | cut -d ' ' -f 1)
+        echo "CPU_INFO=${CPU_MODEL:?}-${CPU_FLAGS_HASH:?}" >>"$GITHUB_ENV"
 
     - name: Get CPU model (macOS)
       if: runner.os == 'macOS'
@@ -40,5 +37,4 @@ runs:
       shell: bash
       run: |
         CPU_INFO=$(printf '%s' "$CPU_INFO" | LC_ALL=C sed -E 's/[^A-Za-z0-9._-]+/_/g; s/^_+//; s/_+$//')
-        test -n "$CPU_INFO"
-        echo "prefix=${ImageOS:?}-${ImageVersion:?}-$CPU_INFO" >>"$GITHUB_OUTPUT"
+        echo "prefix=${ImageOS:?}-${ImageVersion:?}-${CPU_INFO:?}" >>"$GITHUB_OUTPUT"
