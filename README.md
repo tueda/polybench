@@ -99,11 +99,86 @@ cd polybench
 poetry install
 poetry run polybench --all
 ```
+
+
+Docker
+------
+
+The [Dockerfile](https://github.com/tueda/polybench/blob/main/Dockerfile) supports only `linux/amd64/v3`.
+
+Build the image:
+
 ```sh
-docker build -t polybench:latest https://github.com/tueda/polybench.git
-docker run -it --rm polybench:latest
-./run.sh --all
+docker build --platform linux/amd64/v3 -t polybench .
 ```
+
+Containers start in `/work`. Run with results kept inside the disposable
+container:
+
+```sh
+docker run --rm polybench --all
+```
+
+To save results in the current directory on the host, mount it at `/work` and
+use your UID/GID:
+
+```sh
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/work" polybench --all
+```
+
+To start a shell with the same environment, use either:
+
+```sh
+docker run --rm -it polybench bash
+
+docker run --rm -it --user "$(id -u):$(id -g)" -v "$PWD:/work" polybench bash
+```
+
+The image includes prepared solvers and Poly Mojo's 5- and 8-variable drivers;
+other variable counts compile offline when first used in a container.
+
+Fermat and Mathematica/Wolfram Engine are not included.
+
+### Fermat
+
+To use a host installation of Fermat, mount its directory and set
+`FERMAT_COMMAND`. For example:
+
+```sh
+docker run --rm \
+  -v /path/to/fermat-installation:/opt/fermat:ro \
+  -e FERMAT_COMMAND=/opt/fermat/fer64 \
+  polybench --fermat
+```
+
+### Wolfram Engine
+
+To use a host installation of Wolfram Engine, mount WolframScript and the
+Engine, and retain a separate directory for the container's license.
+Use your host UID/GID for both activation and subsequent runs so that the
+license files remain accessible. For example, with Wolfram Engine 15.0:
+
+```sh
+mkdir -p wolfram-license
+
+docker run --rm -it --user "$(id -u):$(id -g)" \
+  -v /opt/Wolfram/WolframScript:/opt/Wolfram/WolframScript:ro \
+  -v /usr/local/Wolfram/WolframEngine/15.0:/usr/local/Wolfram/WolframEngine/15.0:ro \
+  -v "$PWD/wolfram-license:/home/polybench/.WolframEngine/Licensing" \
+  -e WOLFRAMSCRIPT_KERNELPATH=/usr/local/Wolfram/WolframEngine/15.0/Executables/WolframKernel \
+  polybench /opt/Wolfram/WolframScript/bin/wolframscript -activate
+
+docker run --rm --user "$(id -u):$(id -g)" \
+  -v /opt/Wolfram/WolframScript:/opt/Wolfram/WolframScript:ro \
+  -v /usr/local/Wolfram/WolframEngine/15.0:/usr/local/Wolfram/WolframEngine/15.0:ro \
+  -v "$PWD/wolfram-license:/home/polybench/.WolframEngine/Licensing" \
+  -e WOLFRAMSCRIPT_KERNELPATH=/usr/local/Wolfram/WolframEngine/15.0/Executables/WolframKernel \
+  -e WOLFRAMSCRIPT_COMMAND=/opt/Wolfram/WolframScript/bin/wolframscript \
+  polybench --mathematica
+```
+
+See [Wolfram's official Docker instructions](https://hub.docker.com/r/wolframresearch/wolframengine)
+for activation and licensing details.
 
 
 Poly Mojo setup
