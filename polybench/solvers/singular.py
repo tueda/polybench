@@ -62,7 +62,7 @@ class SingularSolver(Solver):
                     print2(f"poly p = {p.p};")
                     print2(f"poly q = {p.q};")
                     print2("int t1 = timer;")
-                    print2("poly r = gcd(p, q) * gcd(content(p), content(q)));")
+                    print2("poly r = gcd(p, q) * gcd(content(p), content(q));")
                     print2("int t2 = timer;")
                     print2("int t = t2 - t1;")
                     print2('fprintf(f, "%s,%s", t, r);')
