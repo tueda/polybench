@@ -6,13 +6,14 @@ import logging
 import operator
 import platform
 import re
+import shlex
 import shutil
 import statistics
 import sys
 import time
 from collections import OrderedDict
 from pathlib import Path
-from typing import Any, Callable, List, NamedTuple, Optional, Sequence, Set, cast
+from typing import Any, Callable, Dict, List, NamedTuple, Optional, Sequence, Set, cast
 
 import colorama
 import cpuinfo
@@ -61,11 +62,74 @@ def next_job_id(output_dir: Path) -> str:
     return make_job_id(n)
 
 
+def _in_docker() -> bool:
+    """Detect common Docker markers without relying on the Docker daemon."""
+    try:
+        if Path("/.dockerenv").exists():
+            return True
+        return "docker" in Path("/proc/self/cgroup").read_text()
+    except (OSError, UnicodeError):
+        return False
+
+
+def _linux_os_release() -> Dict[str, str]:
+    """Read os-release on Python versions with or without the platform API."""
+    reader = getattr(platform, "freedesktop_os_release", None)
+    if reader is not None:
+        try:
+            return cast(Dict[str, str], reader())
+        except (OSError, ValueError):
+            pass
+    for filename in ("/etc/os-release", "/usr/lib/os-release"):
+        try:
+            contents = Path(filename).read_text(encoding="utf-8")
+        except (OSError, UnicodeError):
+            continue
+        result = {}
+        for line in contents.splitlines():
+            key, sep, value = line.partition("=")
+            if not sep or key not in ("PRETTY_NAME", "NAME", "VERSION"):
+                continue
+            try:
+                parts = shlex.split(value, comments=True)
+            except ValueError:
+                continue
+            if len(parts) == 1:
+                result[key] = parts[0]
+        return result
+    return {}
+
+
+def _os_description() -> str:
+    """Return available OS identification, or an empty string on failure."""
+    try:
+        system = platform.system()
+        if system == "Linux":
+            info = _linux_os_release()
+            return info.get("PRETTY_NAME", "") or " ".join(
+                filter(None, (info.get("NAME", ""), info.get("VERSION", "")))
+            )
+        if system == "Darwin":
+            version = platform.mac_ver()[0]
+            return "macOS " + version if version else ""
+        if system == "Windows":
+            release, version, _, _ = platform.win32_ver()
+            details = " ".join(filter(None, (release, version)))
+            return "Windows " + details if details else ""
+    except (OSError, ValueError):
+        pass
+    return ""
+
+
 def config_log(logger: Logger, **kwargs: Any) -> None:
     """Log the configurations."""
     env_logger = logger.getChild("Environment")
 
-    env_logger.info(f"platform = {platform.platform()}")
+    suffix = " (in Docker)" if _in_docker() else ""
+    env_logger.info(f"platform = {platform.platform()}{suffix}")
+    description = _os_description()
+    if description:
+        env_logger.info(f"os_description = {description}")
 
     cpu_info = cpuinfo.get_cpu_info()
     fields = [("python_version", ""), ("brand_raw", "cpu_brand")]

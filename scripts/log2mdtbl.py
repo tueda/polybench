@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import fileinput
-from typing import Sequence
+from typing import Iterable, Sequence
 
 
-def extract_rows(file_input: fileinput.FileInput[str]) -> list[tuple[str, str]]:
+def extract_rows(file_input: Iterable[str]) -> list[tuple[str, str]]:
     """Extract key-value pairs from the input."""
     rows = []
     tools = set()
@@ -16,7 +16,12 @@ def extract_rows(file_input: fileinput.FileInput[str]) -> list[tuple[str, str]]:
         s = a[1].strip()
         a = s.split("]", 1)
         level = a[0].strip()
-        a = a[1].strip().split(" ", 1)
+        message = a[1].strip()
+        # The logger pads names to 12 columns; this name is longer and has
+        # no separator at all between the category and the message.
+        if message.startswith("PolyMojoCertified"):
+            message = "PolyMojoCertified " + message[len("PolyMojoCertified") :]
+        a = message.split(" ", 1)
         category = a[0].strip()
         s = a[1].strip()
         if level == "INFO" and category == "Environment":
@@ -25,6 +30,10 @@ def extract_rows(file_input: fileinput.FileInput[str]) -> list[tuple[str, str]]:
             v = a[-1].strip()
             rows.append((k, v))
         elif level == "INFO" and category not in ("Bench", "Config"):
+            if category in ("PolyMojo", "PolyMojoCertified") and not s.startswith(
+                "Poly Mojo build "
+            ):
+                continue
             if category not in tools:
                 tools.add(category)
                 rows.append((category, s))
