@@ -1,6 +1,26 @@
 # Changelog
 
 
+<a name="0.5.0"></a>
+
+## [0.5.0] (2026-11-03)
+
+### Added
+
+- Add Poly Mojo backends. ([#178](https://github.com/tueda/polybench/pull/178))
+
+### Upgraded
+
+- **FLINT:** 3.5.0 → 3.6.0 ([#181](https://github.com/tueda/polybench/pull/181))
+- **FORM:** 5.0.1 → 5.0.2 ([#179](https://github.com/tueda/polybench/pull/179))
+- **Symbolica:** 2.2.0 → 3.0.1 (requires Rust >= 1.96) ([#157](https://github.com/tueda/polybench/pull/157), [#182](https://github.com/tueda/polybench/pull/182))
+
+### Fixed
+
+- **Singular:** Fix an extra closing parenthesis in GCD code. ([#193](https://github.com/tueda/polybench/pull/193))
+- **Mathematica:** Allow 60 seconds for version detection. ([a00b84d](https://github.com/tueda/polybench/commit/a00b84d0f754b0392ef17093363782f84c96919f))
+
+
 <a name="0.4.3"></a>
 
 ## [0.4.3] (2026-08-03)
@@ -207,6 +227,7 @@
 - First public version.
 
 
+[0.5.0]: https://github.com/tueda/polybench/compare/0.4.3...0.5.0
 [0.4.3]: https://github.com/tueda/polybench/compare/0.4.2...0.4.3
 [0.4.2]: https://github.com/tueda/polybench/compare/0.4.1...0.4.2
 [0.4.1]: https://github.com/tueda/polybench/compare/0.4.0...0.4.1
