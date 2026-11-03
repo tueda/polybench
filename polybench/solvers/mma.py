@@ -32,7 +32,7 @@ class MathematicaSolver(Solver):
         if not wolframscript:
             raise SolverSetupError("executable not found")
 
-        version = self.get_output([wolframscript, "-code", "$Version"])
+        version = self.get_output([wolframscript, "-code", "$Version"], timeout=60)
 
         if version:
             return version[0]
