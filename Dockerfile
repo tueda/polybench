@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:24.04 AS builder
+FROM ubuntu:26.04 AS builder
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # Build tools for the adapters and their native dependencies.
 # NOTE: m4 and make are needed for gmp-mpfr-sys
@@ -112,7 +112,7 @@ FROM scratch AS singular-packages
 ADD --checksum=sha256:c361865b69423e724d6dec372989bcfedff1250e5f857517ac1ff658bc07e06c https://www.singular.uni-kl.de/ftp/repo/ubuntu24/pool/main/s/singular41/singular41-bin_4.4.1-1_amd64.deb /tmp/singular41-bin.deb
 ADD --checksum=sha256:7afc4c45a89e45b34cacffec0626b675cc4134ebd42f01f79d4b3bfe8ec4a967 https://www.singular.uni-kl.de/ftp/repo/ubuntu24/pool/main/s/singular41/singular41-common_4.4.1-1_all.deb /tmp/singular41-common.deb
 
-FROM ubuntu:24.04 AS runtime
+FROM ubuntu:26.04 AS runtime
 # Retain tools invoked by the adapters, including the Mojo driver linker.
 # Mount Singular's installers so they never enter a runtime layer.
 RUN --mount=type=bind,from=singular-packages,source=/tmp,target=/tmp/singular-packages \
