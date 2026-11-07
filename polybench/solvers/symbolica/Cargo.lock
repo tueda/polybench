@@ -468,9 +468,9 @@ dependencies = [
 
 [[package]]
 name = "numerica"
-version = "3.0.1"
+version = "3.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "836accdb415b7667573bd12676e0b2eb4440e3f60b110038d96a9086f5651c15"
+checksum = "dce56bafd491e3068f21c25622bfe340964fdcb720b71f84aa0e2545ba7ff791"
 dependencies = [
  "ahash",
  "colored",
@@ -817,9 +817,9 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "symbolica"
-version = "3.0.1"
+version = "3.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0965398bbe5063c00b3a0d078d7d3dc57b61819b97e960b73e9a7e9602662795"
+checksum = "6bd8536ebc02f334855c80509a9f93fa1051ee875820813b2d85c73ae926d20a"
 dependencies = [
  "ahash",
  "append-only-vec",
